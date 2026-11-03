@@ -89,7 +89,7 @@ build_reviewer_measurement_audit <- function(inputs,settings,destination) {
 
 build_reviewer_candidate_dose <- function(inputs,settings,destination) {
   z<-revision_dose(inputs)
-  loci<-c(NIT2="AT3G44300",SOS1="AT2G01980",AHA2="AT4G30190",HKT1="AT4G10310")
+  loci<-c(NIT2="AT3G44300",SOS1="AT2G01980",AHA2="AT4G30190",KUP4="AT4G23640")
   rows<-lapply(seq_along(loci),function(i){
     id<-revision_candidate_transcript(z$y,loci[i]);a<-z$joint[z$joint$feature==id,]
     data.frame(Gene=names(loci)[i],locus=unname(loci[i]),a,

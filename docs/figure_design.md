@@ -3,7 +3,11 @@
 The eight current manuscript figures use one set of base-R drawing helpers in
 `R/revision_figures.R`. Models, biological replicates, feature selection,
 observations, uncertainty estimates and correction levels are unchanged by
-presentation choices. Historical summary figures remain separate outputs.
+presentation choices. Figure 1D was subsequently changed at the investigator's
+request from HKT1 to KUP4/POT3 (AT4G23640), using the same prespecified
+transcript selection rule and original paired dose model. Supplementary Table
+S13 follows the four currently displayed transcripts; the full genome-wide
+test results retain HKT1. Historical summary figures remain separate outputs.
 
 - Roots are blue and shoots vermilion. Genotype panels use blue for No-0 and
   purple for the overexpressor; the relevant key is shown outside the data area.

@@ -119,7 +119,7 @@ revision_candidate_transcript <- function(y,locus) {
 
 build_revision_dose_figure <- function(inputs,settings,destination) {
   out<-revision_dose(inputs)
-  loci<-c(NIT2="AT3G44300",SOS1="AT2G01980",AHA2="AT4G30190",HKT1="AT4G10310")
+  loci<-c(NIT2="AT3G44300",SOS1="AT2G01980",AHA2="AT4G30190",KUP4="AT4G23640")
   publication_figure(destination,7.2,5.7,function(){
     par(mfrow=c(2,2),mar=c(3.8,4.3,2.7,.8),oma=c(.5,0,1.8,0))
     for(i in seq_along(loci)){
@@ -134,7 +134,7 @@ build_revision_dose_figure <- function(inputs,settings,destination) {
       }
       joint<-out$joint[out$joint$feature==id&out$joint$test=="tissue_by_dose",]
       stopifnot(nrow(joint)==1L)
-      publication_title(LETTERS[i],names(loci)[i],
+      publication_title(LETTERS[i],if(names(loci)[i]=="KUP4")"KUP4 / POT3" else names(loci)[i],
         paste0(id," | tissue x dose q = ",formatC(joint$q,digits=2,format="g")))
     }
     publication_key()
