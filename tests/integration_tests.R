@@ -41,3 +41,12 @@ m<-integration_protein_mapping(x,saved,paste0("AT1G000",c("10","20","30","40","6
 stopifnot(identical(which(m$eligible),1L),!m$eligible[2],all(m$duplicate_locus[c(3,5)]),
   !m$single_accession[4],!m$primary_observed[6])
 cat("Integration aggregation, conjunction, multiplicity and mapping tests passed.\n")
+
+# Ontology aliases must not lose ancestry or count a gene multiple times.
+fake<-list(data=data.frame(locus=c("AT1G00010","AT1G00010","AT1G00020"),
+  GO=c("GO:0015992","GO:0015991","GO:0009651")),spec=list())
+resolved<-integration_canonical_associations(fake)
+stopifnot(nrow(resolved$data)==2L,
+  identical(resolved$data$GO,c("GO:1902600","GO:0009651")),
+  all(integration_settings()$pathway_GO%in%AnnotationDbi::keys(GO.db::GO.db,keytype="GOID")))
+cat("Secondary GO identifier resolution and de-duplication passed.\n")

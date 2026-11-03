@@ -3,7 +3,7 @@ integration_settings <- function() list(
   methods=c("primary","complete_case","single_transcript"),
   primary_protein_method="observed_min2", locus_summary="mean of unique transcript log2 signals",
   joint_threshold=.05, pathway_min_members=5L, pathway_max_fraction=.8,
-  pathway_GO=c("GO:0009651","GO:0006814","GO:0006813","GO:0015992","GO:0009733",
+  pathway_GO=c("GO:0009651","GO:0006814","GO:0006813","GO:1902600","GO:0009733",
     "GO:0000302","GO:0006979","GO:0042744","GO:0016209"),
   candidate_loci=c(NIT2="AT3G44300",SOS1="AT2G01980",AHA2="AT4G30190",
     HKT1="AT4G10310",HAK5="AT4G13420",KUP4="AT4G23640"))

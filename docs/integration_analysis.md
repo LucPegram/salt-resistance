@@ -65,7 +65,12 @@ most favourable sensitivity as the primary result.
 
 Use nine GO sets chosen from the project's salt, transport, auxin and redox
 questions: GO:0009651, GO:0006814, GO:0006813, GO:0015992, GO:0009733,
-GO:0000302, GO:0006979, GO:0042744 and GO:0016209. Recover term names from pinned
+GO:0000302, GO:0006979, GO:0042744 and GO:0016209. During final table QA,
+GO:0015992 was identified as a secondary ID of GO:1902600 in pinned GO.db.
+The planned proton-transport concept is retained under GO:1902600. Resolve
+all supplied secondary GO IDs using the pinned GOTERM Secondary slots before
+ancestor propagation, and de-duplicate gene/term assignments. This correction
+was triggered by identifier quality, not statistical significance. Recover term names from pinned
 GO.db, not guessed labels. The supplied association release remains unknown.
 
 Use the same uniquely mapped, fully observed gene universe for both assays in

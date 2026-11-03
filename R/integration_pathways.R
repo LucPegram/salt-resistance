@@ -13,11 +13,29 @@ integration_pathway_inputs <- function(z,comparison,tissue,sets) {
     sets=lapply(sets,intersect,y=mapping$locus))
 }
 
+integration_canonical_associations <- function(association) {
+  # Secondary IDs are resolved from the pinned ontology before propagation.
+  # This prevents historical aliases from losing their current ancestors.
+  terms<-as.list(GO.db::GOTERM)
+  secondary<-lapply(terms,function(x)methods::slot(x,"Secondary"))
+  canonical<-rep(names(terms),lengths(secondary))
+  alias<-unlist(secondary,use.names=FALSE)
+  if(anyDuplicated(alias))stop("Ambiguous secondary GO identifiers in pinned ontology")
+  index<-match(association$data$GO,alias)
+  resolved<-association$data$GO
+  resolved[!is.na(index)]<-canonical[index[!is.na(index)]]
+  association$data<-unique(data.frame(locus=association$data$locus,GO=resolved))
+  association
+}
+
 integration_pathways <- function(inputs) integration_cached("focused_pathways",inputs,{
   z<-integration_results(inputs);settings<-integration_settings()
-  allsets<-revision_go_sets(inputs$go_associations)
+  canonical<-integration_canonical_associations(inputs$go_associations)
+  # The underlying cache includes the normalized association table in its key.
+  allsets<-revision_go_sets(canonical)
   sets<-setNames(lapply(settings$pathway_GO,function(go)allsets[[go]]),settings$pathway_GO)
   labels<-AnnotationDbi::select(GO.db::GO.db,keys=names(sets),columns=c("TERM","ONTOLOGY"),keytype="GOID")
+  if(anyNA(labels$TERM))stop("Focused GO identifier is not resolved in pinned ontology")
   rows<-memberships<-list()
   for(tissue in c("Root","Shoot"))for(comparison in c("No0_genotype","Col0_context")){
     a<-integration_pathway_inputs(z,comparison,tissue,sets)
