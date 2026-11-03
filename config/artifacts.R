@@ -35,7 +35,8 @@ artifact_registry <- c(artifact_registry, list(
     filename = "qpcr_full_panel.csv", status = "descriptive"),
   figure_manuscript_qpcr_candidates = list(
     inputs = "qpcr_summary", builder = "build_manuscript_qpcr_figure",
-    filename = "qpcr_candidates.pdf", status = "descriptive"),
+    filename = "qpcr_candidates.pdf", status = "descriptive",
+    formats = c("pdf", "svg", "tiff", "png")),
   table_existing_microarray_results = list(
     inputs = names(input_specs)[grepl("^saved_(dose|genotype)", names(input_specs))],
     builder = "build_existing_microarray_results", filename = "existing_microarray_results.csv", status = "legacy summary"),

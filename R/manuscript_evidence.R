@@ -142,9 +142,7 @@ qpcr_summary_table <- function(d, settings, genes) {
 }
 
 build_manuscript_qpcr_figure <- function(inputs, settings, destination) {
-  settings$qpcr_genes <- c("AHA2", "SOS1", "HKT1", "HAK5")
-  settings$qpcr_panel_columns <- 2L
-  build_qpcr_figure(inputs, settings, destination)
+  build_publication_qpcr(inputs, settings, destination)
 }
 
 build_existing_pairwise_results <- function(inputs, settings, destination) {

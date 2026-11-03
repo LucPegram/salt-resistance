@@ -47,6 +47,9 @@ estimates are unavailable. Interval and correction labels must remain attached.
 | Complete-case ordinary-ANOVA numerical check | `table_proteomics_completecase_audit` |
 
 Use the same single-output command with any registered ID above.
+The six current manuscript figure commands also export SVG, 600-dpi TIFF and
+PNG previews, each recorded in provenance. To rebuild just these six figures,
+run `Rscript --vanilla scripts/reproduce_figures.R`. See `docs/figure_design.md`.
 `Rscript --vanilla scripts/inventory_sources.R` creates source and historical
 script inventories locally. `legacy/README.md` lists original script hashes.
 No inventory of result values is stored in this repository.

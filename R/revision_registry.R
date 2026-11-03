@@ -5,7 +5,7 @@ revision_registry <- function() {
   legacy <- c("saved_proteomics_root", "saved_proteomics_shoot")
   entry <- function(inputs,builder,filename,status="revised analysis")
     list(inputs=inputs,builder=builder,filename=filename,status=status)
-  list(
+  entries <- list(
     table_revision_genotype = entry(genotype,"build_revision_microarray","genotype_contrasts.csv"),
     table_revision_dose = entry(dose,"build_revision_dose","dose_joint_tests.csv"),
     table_revision_protein = entry(protein,"build_revision_protein","protein_contrasts.csv"),
@@ -28,4 +28,7 @@ revision_registry <- function() {
     figure_revision_contrasts = entry(protein,"build_revision_contrast_figure","candidate_contrast_intervals.pdf"),
     figure_revision_prestress = entry(c(genotype,protein),"build_revision_prestress_figure","prestress_similarity.pdf","exploratory resemblance")
   )
+  for (id in names(entries)[startsWith(names(entries), "figure_")])
+    entries[[id]]$formats <- c("pdf", "svg", "tiff", "png")
+  entries
 }

@@ -51,6 +51,7 @@ export SALT_OUTPUT_ROOT=/absolute/path/to/local/analysis_outputs
 Rscript --vanilla scripts/reproduce.R --list
 Rscript --vanilla scripts/reproduce.R table_revision_primary_candidates
 Rscript --vanilla scripts/reproduce.R figure_revision_protein
+Rscript --vanilla scripts/reproduce_figures.R
 Rscript --vanilla scripts/reproduce.R all
 ```
 
@@ -63,6 +64,10 @@ An optional `SALT_MODEL_CACHE` directory outside code and source inputs can reus
 model results. Keys include input, relevant source, setting and package-version
 hashes. Cached payloads are hash-checked. A fresh run without a cache is supported.
 Caches are derived data and must never be pushed.
+
+The six current manuscript figures use consistent publication styling and export
+vector PDF/SVG, 600-dpi TIFF and PNG previews. All formats are hash-recorded.
+`docs/figure_design.md` describes visual encodings and display qualifications.
 
 ## Reproduction and audit documentation
 

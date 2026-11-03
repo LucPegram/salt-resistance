@@ -32,7 +32,9 @@ run_artifact <- function(id, project_root, data_root, output_root, cache = new.e
   set.seed(analysis_settings$seed)
   destination <- file.path(destination_dir, entry$filename)
   get(entry$builder, mode = "function")(inputs, analysis_settings, destination)
-  if (!file.exists(destination) || file.info(destination)$size == 0) {
+  output_paths <- if (is.null(entry$formats)) destination else
+    paste0(sub("\\.pdf$", "", destination), ".", entry$formats)
+  if (any(!file.exists(output_paths)) || any(file.info(output_paths)$size == 0)) {
     stop("Output was not successfully written: ", destination)
   }
   after <- vapply(input_paths, hash, "")
@@ -54,7 +56,7 @@ run_artifact <- function(id, project_root, data_root, output_root, cache = new.e
     input_relative_paths = setNames(vapply(entry$inputs, function(n) input_specs[[n]]$path, ""), entry$inputs),
     input_sha256 = before, settings = analysis_settings,
     code_sha256 = code_before,
-    output_sha256 = setNames(hash(destination), entry$filename),
+    output_sha256 = setNames(vapply(output_paths, hash, ""), basename(output_paths)),
     R_version = R.version.string,
     package_versions = setNames(vapply(c("readxl", "digest", "jsonlite", "limma", "statmod", "proDA", "GO.db", "AnnotationDbi"),
       function(n) as.character(utils::packageVersion(n)), ""), c("readxl", "digest", "jsonlite", "limma", "statmod", "proDA", "GO.db", "AnnotationDbi")))
