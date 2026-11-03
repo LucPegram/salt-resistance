@@ -10,14 +10,16 @@ presentation choices. Historical summary figures remain separate outputs.
 - Shape and line style also distinguish groups, providing cues without colour.
 - Dose axes mark only the actual sampled concentrations. Small deterministic
   horizontal offsets separate observations; mean lines use the true dose values.
+- Dose-panel subtitles also show the selected transcript tissue-by-dose BH
+  value from correction across all 29,391 transcript IDs.
 - Protein panels retain all available pool measurements and observed log-scale
-  means. Missing values are never drawn as artificial observations. AHA2 group
+  means, with observed pool counts for each cell. Missing values are never drawn as artificial observations. AHA2 group
   specificity and root NIT2 model eligibility remain qualified in figure legends.
 - Contrast panels retain pointwise moderated intervals. BH values sit in their
   own aligned column. Neither intervals nor display colour represent an
   additional significance test.
 - The resemblance figure retains every feature and extreme value. Its lower
-  panel displays the already defined shared-control and all disjoint-control
+  panel leads the figure and displays the already defined shared-control and all disjoint-control
   correlations. The connecting line spans the disjoint-split range; it is not a
   confidence interval. Small vertical offsets separate the individual splits.
 - PCA uses unchanged coordinates. Deterministic label placement reduces

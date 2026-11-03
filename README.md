@@ -14,6 +14,8 @@ excluded. Every registered output can be rebuilt separately from external inputs
 - `R/revision_figures.R` and `R/revision_manuscript_tables.R`: manuscript outputs.
 - `R/integration_*.R`: locus-matched transcript/protein comparisons, joint
   directional evidence, focused CAMERA pathways and integration figures.
+- `R/reviewer_diagnostics.R`: candidate dose tests, locus influence, joint-hit
+  sensitivities and processed-measurement audits requested during review.
 - `R/manuscript_evidence.R`: historical summaries and numerical audits.
 - `config/`: external input paths, analysis settings and output registry.
 - `scripts/`: reproduction, dependency checks and code-publication checks.

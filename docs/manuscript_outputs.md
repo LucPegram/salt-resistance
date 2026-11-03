@@ -29,6 +29,10 @@ required models, including slower dropout sensitivities, before writing the outp
 | Supplementary Table S10 | `Rscript --vanilla scripts/reproduce.R table_integration_genes` |
 | Supplementary Table S11 | `Rscript --vanilla scripts/reproduce.R table_integration_pathways` |
 | Supplementary Table S11 memberships | `Rscript --vanilla scripts/reproduce.R table_integration_memberships` |
+| Supplementary Table S13 | `Rscript --vanilla scripts/reproduce.R table_integration_candidate_dose` |
+| Supplementary Table S14 | `Rscript --vanilla scripts/reproduce.R table_integration_influence` |
+| Supplementary Table S15 | `Rscript --vanilla scripts/reproduce.R table_integration_joint_sensitivity` |
+| Supplementary Table S16 | `Rscript --vanilla scripts/reproduce.R table_integration_measurement_audit` |
 | Supplementary Table S12 | `Rscript --vanilla scripts/reproduce.R table_integration_candidates` |
 | Supplementary mapping audit | `Rscript --vanilla scripts/reproduce.R table_integration_mapping` |
 | Supplementary Figure S3 | `Rscript --vanilla scripts/reproduce.R figure_integration_pathways` |
@@ -57,7 +61,7 @@ estimates are unavailable. Interval and correction labels must remain attached.
 Use the same single-output command with any registered ID above.
 The eight current manuscript figure commands also export SVG, 600-dpi TIFF and
 PNG previews, each recorded in provenance. To rebuild just these six figures,
-run `Rscript --vanilla scripts/reproduce_figures.R`; rebuild the six integration
+run `Rscript --vanilla scripts/reproduce_figures.R`; rebuild the ten integration and reviewer-diagnostic
 tables and two additional figures with `Rscript --vanilla scripts/reproduce_integration.R`. See `docs/figure_design.md`.
 `Rscript --vanilla scripts/inventory_sources.R` creates source and historical
 script inventories locally. `legacy/README.md` lists original script hashes.

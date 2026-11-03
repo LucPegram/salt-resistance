@@ -95,3 +95,17 @@ not pathway activation or ROS/ion flux, and does not prove every member agrees.
 Here the conservative factor of two is retained. The scientific terminology is
 joint molecular association because the assays do not sample identical material
 or treatment regimes. All data and generated results remain outside GitHub.
+
+## Additional diagnostics after visual review
+
+The response to visual review adds four reproducible tables without changing
+primary tests or eligibility: selected transcript tissue-by-dose tests from the
+existing paired model; descriptive influence of omitting the three loci selected
+by primary joint BH, plus every leave-one-locus Pearson correlation; complete-case
+and single-transcript correction values beside each primary joint hit; and
+per-cell processed-measurement ranges and reported identity support for all
+highlighted loci. The omission set is explicitly post hoc and is not a new
+discovery analysis. No samples or genes are excluded from the primary figures
+or correlations. Gene counts are not biological replication. The measurement
+audit independently checks that cell means reproduce highlighted model contrasts;
+it does not validate raw processing, probe specificity or peptide spectra.

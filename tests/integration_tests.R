@@ -50,3 +50,10 @@ stopifnot(nrow(resolved$data)==2L,
   identical(resolved$data$GO,c("GO:1902600","GO:0009651")),
   all(integration_settings()$pathway_GO%in%AnnotationDbi::keys(GO.db::GO.db,keytype="GOID")))
 cat("Secondary GO identifier resolution and de-duplication passed.\n")
+
+set.seed(231)
+x<-rnorm(25);y<-.3*x+rnorm(25)
+actual<-reviewer_loo_cor(x,y)
+expected<-vapply(seq_along(x),function(i)cor(x[-i],y[-i]),numeric(1))
+stopifnot(max(abs(actual-expected))<1e-12)
+cat("Leave-one-locus correlation agrees with direct recomputation.\n")

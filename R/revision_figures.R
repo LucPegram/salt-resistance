@@ -132,7 +132,10 @@ build_revision_dose_figure <- function(inputs,settings,destination) {
         points(m$dose[k]+offset+(m$replicate[k]-2)*.7,v[k],bg=color,col="white",lwd=.4,
           pch=if(t=="Root")21 else 24,cex=1.05)
       }
-      publication_title(LETTERS[i],names(loci)[i],id)
+      joint<-out$joint[out$joint$feature==id&out$joint$test=="tissue_by_dose",]
+      stopifnot(nrow(joint)==1L)
+      publication_title(LETTERS[i],names(loci)[i],
+        paste0(id," | tissue x dose q = ",formatC(joint$q,digits=2,format="g")))
     }
     publication_key()
   })
@@ -140,14 +143,15 @@ build_revision_dose_figure <- function(inputs,settings,destination) {
 
 build_revision_protein_figure <- function(inputs,settings,destination) {
   panels<-lapply(inputs,revision_protein)
-  publication_figure(destination,7.2,5.8,function(){
-    par(mfrow=c(2,3),mar=c(3.8,3.8,2.9,.65),oma=c(1.9,0,1.8,0))
+  publication_figure(destination,7.2,6.1,function(){
+    par(mfrow=c(2,3),mar=c(4.5,3.8,2.9,.65),oma=c(1.9,0,1.8,0))
     for(i in seq_along(panels))for(j in 1:3){
       z<-panels[[i]];g<-c("NIT2","NHX7","AHA2")[j];k<-which(z$annotations$Genes==g)
       if(length(k)!=1L)stop("Ambiguous candidate protein")
       y<-z$y[k,];m<-z$metadata
+      counts<-vapply(levels(m$cell),function(cell)sum(is.finite(y[m$cell==cell])),integer(1))
       publication_axes(c(.55,4.45),publication_range(y),ylab="Log2 abundance",at=1:4,
-        labels=c("No-0\n0","No-0\n75","NIT2\n0","NIT2\n75"))
+        labels=paste0(c("No-0\n0","No-0\n75","NIT2\n0","NIT2\n75"),"\nn=",counts))
       for(cell in 1:4){
         v<-y[m$cell==levels(m$cell)[cell]];genotype<-if(cell<=2)"No-0" else "NIT2"
         if(any(is.finite(v)))segments(cell-.23,mean(v,na.rm=TRUE),cell+.23,mean(v,na.rm=TRUE),lwd=1.6)
@@ -158,7 +162,7 @@ build_revision_protein_figure <- function(inputs,settings,destination) {
       publication_title(LETTERS[(i-1)*3+j],paste(label,inputs[[i]]$spec$tissue),
         paste0(z$annotations$Protein.Group[k],"   |   ",sum(is.finite(y)),"/12 observed"))
     }
-    publication_key(FALSE,paste0("NaCl (mM) below genotype; circles: control; triangles: salt; bars: observed means\n",
+    publication_key(FALSE,paste0("NaCl (mM) and observed n below genotype; circles: control; triangles: salt; bars: means\n",
       "*AHA2-labelled group; isoform specificity is unresolved"))
   })
 }
@@ -202,22 +206,10 @@ build_revision_prestress_figure <- function(inputs,settings,destination) {
       y=z$y[z$selection$complete_case,,drop=FALSE],m=z$metadata)
   }
   similarities<-lapply(seq_along(sets),function(i)prestress_splits(sets[[i]]$y,sets[[i]]$m,names(sets)[i]))
-  publication_figure(destination,7.2,5.2,function(){
-    layout(rbind(1:3,c(4,4,4)),heights=c(1.65,1))
-    par(mar=c(3.8,3.8,2.6,.6),oma=c(.7,0,.1,0))
-    for(i in seq_along(sets)){
-      y<-sets[[i]]$y;m<-sets[[i]]$m
-      b<-rowMeans(y[,m$cell=="OE0",drop=FALSE])-rowMeans(y[,m$cell=="WT0",drop=FALSE])
-      s<-rowMeans(y[,m$cell=="WTS",drop=FALSE])-rowMeans(y[,m$cell=="WT0",drop=FALSE])
-      # All measured features and extremes remain visible on symmetric axes.
-      lim<-max(abs(c(b,s)))*1.06
-      publication_axes(c(-lim,lim),c(-lim,lim),"No-0 salt response (log2)",
-        if(i==1)"Basal genotype difference (log2)" else "")
-      abline(v=0,h=0,col="#A9B4BE",lty=2,lwd=.7)
-      points(s,b,pch=16,cex=.27,col=adjustcolor(publication_colors["No-0"],alpha.f=.20))
-      publication_title(LETTERS[i],names(sets)[i],paste(format(nrow(y),big.mark=","),"measured features"))
-    }
-    par(mar=c(3.2,8.8,2.1,1))
+  publication_figure(destination,7.2,5.7,function(){
+    layout(rbind(c(1,1,1),2:4),heights=c(1,1.65))
+    par(oma=c(.6,0,.6,0),cex=1)
+    par(mar=c(3.2,8.8,2.7,1))
     plot(NA,xlim=c(-1,1),ylim=c(.5,3.5),xlab="Pearson correlation",ylab="",yaxt="n",axes=FALSE,xaxs="i")
     abline(v=seq(-1,1,by=.25),col=publication_colors["grid"],lwd=.6);abline(v=0,col="#A9B4BE",lty=2)
     axis(1,at=seq(-1,1,by=.25),lwd=0,lwd.ticks=.6)
@@ -228,10 +220,24 @@ build_revision_prestress_figure <- function(inputs,settings,destination) {
       points(v,4-i+seq(-.12,.12,length.out=length(v)),pch=21,bg="white",col="#687985",cex=.95)
       points(r,4-i,pch=18,col=publication_colors["NIT2"],cex=1.45)
     }
-    publication_title("D","Sensitivity to control sharing")
+    publication_title("A","Sensitivity to control sharing")
     legend("topright",c("Shared controls","Each disjoint split"),pch=c(18,21),
       col=c(publication_colors["NIT2"],"#687985"),pt.bg="white",bty="n",cex=.78,horiz=TRUE,
       inset=c(0,0))
+    par(mar=c(3.8,3.8,2.6,.6))
+    for(i in seq_along(sets)){
+      y<-sets[[i]]$y;m<-sets[[i]]$m
+      b<-rowMeans(y[,m$cell=="OE0",drop=FALSE])-rowMeans(y[,m$cell=="WT0",drop=FALSE])
+      s<-rowMeans(y[,m$cell=="WTS",drop=FALSE])-rowMeans(y[,m$cell=="WT0",drop=FALSE])
+      # All measured features and extremes remain visible on symmetric axes.
+      lim<-max(abs(c(b,s)))*1.06
+      publication_axes(c(-lim,lim),c(-lim,lim),"No-0 salt response (log2)",
+        if(i==1)"Basal genotype difference (log2)" else "")
+      abline(v=0,h=0,col="#A9B4BE",lty=2,lwd=.7)
+      points(s,b,pch=16,cex=.27,col=adjustcolor(publication_colors["No-0"],alpha.f=.20))
+      publication_title(LETTERS[i+1L],names(sets)[i],paste(format(nrow(y),big.mark=","),"measured features"))
+    }
+
   })
 }
 
