@@ -258,10 +258,9 @@ build_publication_qpcr <- function(inputs,settings,destination) {
           segments(xx-.035,v[k]+se[k],xx+.035,v[k]+se[k],col=color,lwd=1)
         }
         points(xx,v[k],bg=color,col="white",lwd=.5,pch=if(salt)24 else 21,cex=1.2)
-        if(!is.finite(se[k]))text(xx,v[k],"*",pos=4,offset=.3,cex=.75)
       }
       publication_title(LETTERS[(i-1)*4+j],genes[j],settings$tissue_levels[i])
     }
-    publication_key(FALSE,"Group means +/- source STE; *STE missing; n and STE definition unknown. Panel y scales differ.")
+    publication_key(FALSE,"Group means +/- source STE; short bars may sit inside symbols. n and STE definition unknown.")
   })
 }

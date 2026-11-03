@@ -24,7 +24,8 @@ presentation choices. Historical summary figures remain separate outputs.
   collisions, and sample keys occupy a separate panel.
 - qPCR uses separate root/shoot panels with independently labelled y axes.
   Points remain reported group means and error bars remain the supplied STE.
-  Asterisks mark missing STE rather than implying a zero error bar.
+  Short error bars can be covered by the mean symbols; no missing error is
+  interpreted as zero uncertainty. Every selected candidate has a reported STE.
   Displaying them in separate panels does not reconstruct biological replication.
 - Integration scatterplots retain every eligible locus and use the same axis
   limits for root and shoot within each comparison column. Candidate labels and
