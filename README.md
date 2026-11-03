@@ -77,6 +77,9 @@ vector PDF/SVG, 600-dpi TIFF and PNG previews. All formats are hash-recorded.
 
 ## Reproduction and audit documentation
 
+[`docs/R_script_guide.md`](docs/R_script_guide.md) explains the purpose, inputs,
+outputs and functions of every current and archived R script.
+
 `docs/manuscript_outputs.md` maps every main/supplementary table and figure to an
 independent command. `config/artifacts.R` and `R/revision_registry.R` provide the
 registry. Builders never require a pre-existing output directory.
