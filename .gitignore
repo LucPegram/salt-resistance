@@ -1,0 +1,33 @@
+# This repository tracks source code and reproducibility documentation only.
+*
+!*/
+!.gitignore
+!DESCRIPTION
+!renv.lock
+!*.R
+!*.md
+# Always exclude local inputs, generated outputs, libraries, and session state.
+data/
+source_data/
+outputs/
+results/
+figures/
+tables/
+renv/library/
+renv/staging/
+.Rproj.user/
+.Rhistory
+.RData
+.Renviron
+config/local.R
+*.zip
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.rds
+*.pdf
+*.png
+*.svg
+*.txt
+
