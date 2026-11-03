@@ -174,7 +174,7 @@ build_revision_contrast_figure <- function(inputs,settings,destination) {
     par(cex=1)
     for(i in seq_along(contrasts)){
       z<-d[d$contrast==contrasts[i],];z<-z[order(match(z$Genes,c("NIT2","NHX7","AHA2")),z$tissue),]
-      labels<-paste(ifelse(z$Genes=="NHX7","SOS1",z$Genes),z$tissue)
+      labels<-paste(ifelse(z$Genes=="NHX7","SOS1",ifelse(z$Genes=="AHA2","AHA2*",z$Genes)),z$tissue)
       yy<-rev(seq_len(nrow(z)));xr<-publication_range(c(0,z$lower95,z$upper95),.1)
       plot(NA,xlim=c(xr[1],xr[2]+diff(xr)*.29),ylim=c(.5,nrow(z)+.65),
         axes=FALSE,xaxs="i",xlab="Log2 difference",ylab="")
@@ -258,9 +258,10 @@ build_publication_qpcr <- function(inputs,settings,destination) {
           segments(xx-.035,v[k]+se[k],xx+.035,v[k]+se[k],col=color,lwd=1)
         }
         points(xx,v[k],bg=color,col="white",lwd=.5,pch=if(salt)24 else 21,cex=1.2)
+        if(!is.finite(se[k]))text(xx,v[k],"*",pos=4,offset=.3,cex=.75)
       }
       publication_title(LETTERS[(i-1)*4+j],genes[j],settings$tissue_levels[i])
     }
-    publication_key(FALSE,"Reported group means +/- STE; n and STE definition unavailable. Panel y scales differ.")
+    publication_key(FALSE,"Group means +/- source STE; *STE missing; n and STE definition unknown. Panel y scales differ.")
   })
 }

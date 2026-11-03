@@ -12,6 +12,8 @@ excluded. Every registered output can be rebuilt separately from external inputs
   sensitivities and disjoint-control resemblance calculations.
 - `R/revision_enrichment.R`: directional enrichment with eligible universes.
 - `R/revision_figures.R` and `R/revision_manuscript_tables.R`: manuscript outputs.
+- `R/integration_*.R`: locus-matched transcript/protein comparisons, joint
+  directional evidence, focused CAMERA pathways and integration figures.
 - `R/manuscript_evidence.R`: historical summaries and numerical audits.
 - `config/`: external input paths, analysis settings and output registry.
 - `scripts/`: reproduction, dependency checks and code-publication checks.
@@ -31,6 +33,7 @@ After installing `renv`, run `renv::restore()` from this repository, then check:
 ```sh
 Rscript --vanilla scripts/check_environment.R
 Rscript --vanilla tests/run_tests.R
+Rscript --vanilla tests/integration_tests.R
 ```
 
 The lock records exact installed sources and versions. These checks do not prove
@@ -52,6 +55,7 @@ Rscript --vanilla scripts/reproduce.R --list
 Rscript --vanilla scripts/reproduce.R table_revision_primary_candidates
 Rscript --vanilla scripts/reproduce.R figure_revision_protein
 Rscript --vanilla scripts/reproduce_figures.R
+Rscript --vanilla scripts/reproduce_integration.R
 Rscript --vanilla scripts/reproduce.R all
 ```
 
@@ -65,7 +69,7 @@ model results. Keys include input, relevant source, setting and package-version
 hashes. Cached payloads are hash-checked. A fresh run without a cache is supported.
 Caches are derived data and must never be pushed.
 
-The six current manuscript figures use consistent publication styling and export
+The eight current manuscript figures use consistent publication styling and export
 vector PDF/SVG, 600-dpi TIFF and PNG previews. All formats are hash-recorded.
 `docs/figure_design.md` describes visual encodings and display qualifications.
 
@@ -75,6 +79,8 @@ vector PDF/SVG, 600-dpi TIFF and PNG previews. All formats are hash-recorded.
 independent command. `config/artifacts.R` and `R/revision_registry.R` provide the
 registry. Builders never require a pre-existing output directory.
 `docs/analysis_decisions.md` explains model choices and unresolved constraints.
+`docs/integration_analysis.md` specifies gene mapping, contrast alignment,
+directional conjunction, multiplicity, pathway universes and sensitivities.
 
 ```sh
 Rscript --vanilla scripts/inventory_sources.R

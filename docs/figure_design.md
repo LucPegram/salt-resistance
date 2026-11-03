@@ -1,6 +1,6 @@
 # Manuscript figure presentation
 
-The six current manuscript figures use one set of base-R drawing helpers in
+The eight current manuscript figures use one set of base-R drawing helpers in
 `R/revision_figures.R`. Models, biological replicates, feature selection,
 observations, uncertainty estimates and correction levels are unchanged by
 presentation choices. Historical summary figures remain separate outputs.
@@ -24,7 +24,15 @@ presentation choices. Historical summary figures remain separate outputs.
   collisions, and sample keys occupy a separate panel.
 - qPCR uses separate root/shoot panels with independently labelled y axes.
   Points remain reported group means and error bars remain the supplied STE.
+  Asterisks mark missing STE rather than implying a zero error bar.
   Displaying them in separate panels does not reconstruct biological replication.
+- Integration scatterplots retain every eligible locus and use the same axis
+  limits for root and shoot within each comparison column. Candidate labels and
+  joint-BH symbols are separate encodings. No fitted common biological slope or
+  sample pairing is implied.
+- Focused pathway panels show all planned terms and contrasts, including
+  untestable terms. Symbols describe joint relative enrichment, with direction,
+  evidence and multiplicity explained in the legend; none measures activation.
 
 ## Export and reproduction
 

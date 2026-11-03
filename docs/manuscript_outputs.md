@@ -13,6 +13,7 @@ required models, including slower dropout sensitivities, before writing the outp
 | Main Figure 1 | `Rscript --vanilla scripts/reproduce.R figure_revision_dose` |
 | Main Figure 2 | `Rscript --vanilla scripts/reproduce.R figure_revision_protein` |
 | Main Figure 3 | `Rscript --vanilla scripts/reproduce.R figure_revision_contrasts` |
+| Main Figure 5 | `Rscript --vanilla scripts/reproduce.R figure_integration_concordance` |
 | Main Figure 4 | `Rscript --vanilla scripts/reproduce.R figure_revision_prestress` |
 | Supplementary Table S1 | `Rscript --vanilla scripts/reproduce.R table_existing_microarray_results` |
 | Supplementary Table S2 | `Rscript --vanilla scripts/reproduce.R table_existing_proteomics_results` |
@@ -24,6 +25,13 @@ required models, including slower dropout sensitivities, before writing the outp
 | Supplementary Table S7 | `Rscript --vanilla scripts/reproduce.R table_revision_sensitivity_summary` |
 | Supplementary Table S8 | `Rscript --vanilla scripts/reproduce.R table_manuscript_qpcr_full` |
 | Supplementary Figure S1 | `Rscript --vanilla scripts/reproduce.R figure_revision_qc` |
+| Supplementary Table S9 | `Rscript --vanilla scripts/reproduce.R table_integration_summary` |
+| Supplementary Table S10 | `Rscript --vanilla scripts/reproduce.R table_integration_genes` |
+| Supplementary Table S11 | `Rscript --vanilla scripts/reproduce.R table_integration_pathways` |
+| Supplementary Table S11 memberships | `Rscript --vanilla scripts/reproduce.R table_integration_memberships` |
+| Supplementary Table S12 | `Rscript --vanilla scripts/reproduce.R table_integration_candidates` |
+| Supplementary mapping audit | `Rscript --vanilla scripts/reproduce.R table_integration_mapping` |
+| Supplementary Figure S3 | `Rscript --vanilla scripts/reproduce.R figure_integration_pathways` |
 | Supplementary Figure S2 | `Rscript --vanilla scripts/reproduce.R figure_manuscript_qpcr_candidates` |
 
 Numeric CSV columns are formatted for Word presentation without changing their
@@ -47,9 +55,10 @@ estimates are unavailable. Interval and correction labels must remain attached.
 | Complete-case ordinary-ANOVA numerical check | `table_proteomics_completecase_audit` |
 
 Use the same single-output command with any registered ID above.
-The six current manuscript figure commands also export SVG, 600-dpi TIFF and
+The eight current manuscript figure commands also export SVG, 600-dpi TIFF and
 PNG previews, each recorded in provenance. To rebuild just these six figures,
-run `Rscript --vanilla scripts/reproduce_figures.R`. See `docs/figure_design.md`.
+run `Rscript --vanilla scripts/reproduce_figures.R`; rebuild the six integration
+tables and two additional figures with `Rscript --vanilla scripts/reproduce_integration.R`. See `docs/figure_design.md`.
 `Rscript --vanilla scripts/inventory_sources.R` creates source and historical
 script inventories locally. `legacy/README.md` lists original script hashes.
 No inventory of result values is stored in this repository.

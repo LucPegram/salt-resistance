@@ -55,6 +55,7 @@ run_artifact <- function(id, project_root, data_root, output_root, cache = new.e
     command = commandArgs(), git_revision = revision,
     input_relative_paths = setNames(vapply(entry$inputs, function(n) input_specs[[n]]$path, ""), entry$inputs),
     input_sha256 = before, settings = analysis_settings,
+    integration_settings = if (grepl("integration", id, fixed = TRUE)) integration_settings() else NULL,
     code_sha256 = code_before,
     output_sha256 = setNames(vapply(output_paths, hash, ""), basename(output_paths)),
     R_version = R.version.string,
