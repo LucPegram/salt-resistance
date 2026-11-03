@@ -27,6 +27,8 @@ publication_range <- function(y,padding=.12) {
 }
 
 publication_axes <- function(xlim,ylim,xlab="",ylab="",at=NULL,labels=at) {
+  # mfrow otherwise silently shrinks axis text in dense multi-panel figures.
+  par(cex=1)
   plot(NA,xlim=xlim,ylim=ylim,xlab=xlab,ylab=ylab,axes=FALSE,xaxs="i",yaxs="i")
   yt<-pretty(ylim,n=4);yt<-yt[yt>=ylim[1]&yt<=ylim[2]]
   abline(h=yt,col=publication_colors["grid"],lwd=.7)
@@ -169,6 +171,7 @@ build_revision_contrast_figure <- function(inputs,settings,destination) {
   subtitles<-c("NIT2 - No-0 at 0 mM","75 mM - control","NIT2 - No-0 at 75 mM","Difference between salt responses")
   publication_figure(destination,7.2,5.8,function(){
     par(mfrow=c(2,2),mar=c(3.7,4.9,2.8,.8),oma=c(1.2,0,1.8,0))
+    par(cex=1)
     for(i in seq_along(contrasts)){
       z<-d[d$contrast==contrasts[i],];z<-z[order(match(z$Genes,c("NIT2","NHX7","AHA2")),z$tissue),]
       labels<-paste(ifelse(z$Genes=="NHX7","SOS1",z$Genes),z$tissue)
@@ -238,13 +241,13 @@ build_publication_qpcr <- function(inputs,settings,destination) {
     Tissue=settings$tissue_levels,stringsAsFactors=FALSE)
   key<-function(z)paste(z$Tissue,z$Genotype,z$Treatment)
   for(g in genes){z<-d[d$Gene==g,];if(nrow(z)!=nrow(expected)||!setequal(key(z),key(expected)))stop("Incomplete qPCR candidate panel")}
-  publication_figure(destination,7.2,4.9,function(){
-    par(mfrow=c(2,4),mar=c(3,3.6,2.7,.5),oma=c(1.4,.1,1.8,0))
+  publication_figure(destination,7.2,5.2,function(){
+    par(mfrow=c(2,4),mar=c(3,3.6,2.7,.5),oma=c(2,.1,1.8,0))
     for(i in seq_along(settings$tissue_levels))for(j in seq_along(genes)){
       z<-d[d$Gene==genes[j]&d$Tissue==settings$tissue_levels[i],];v<-z[["Average Normalized expression"]];se<-z$STE
       limits<-range(c(0,v,v-se,v+se),na.rm=TRUE);limits[2]<-max(limits[2],.001)*1.15
       if(limits[1]<0)limits[1]<-limits[1]*1.1
-      publication_axes(c(-.3,1.3),limits,"NaCl (mM)",if(j==1)"Reported normalized expression" else "",
+      publication_axes(c(-.3,1.3),limits,"NaCl (mM)",if(j==1)"Normalized expression" else "",
         at=c(0,1),labels=c("0","75"))
       for(k in seq_len(nrow(z))){
         genotype<-if(z$Genotype[k]=="No-0")"No-0" else "NIT2";salt<-z$Treatment[k]!="Untreated"
