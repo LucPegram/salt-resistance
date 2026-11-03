@@ -108,3 +108,8 @@ Rscript --vanilla scripts/check_code_only.R
 
 The allowlist rejects measurements, generated results, libraries, session state
 and manuscripts. Public data deposition must be arranged separately.
+
+The supporting-trend candidate screen is described in [docs/supporting_trends.md](docs/supporting_trends.md).
+Run `Rscript --vanilla scripts/reproduce_supporting.R` for its eight independent
+report, table, audit and profile-figure artifacts. Synthetic selection and
+correlation checks: `Rscript --vanilla tests/supporting_tests.R`.

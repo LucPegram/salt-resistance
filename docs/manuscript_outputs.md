@@ -77,3 +77,8 @@ Figure 4 now shows sample PCA for all treatment/genotype combinations. The earli
 `figure_revision_prestress` remains a reproducible historical output and is not
 part of the current manuscript. PCA is no longer duplicated in the supplement;
 qPCR and pathways are now Supplementary Figures S1 and S2.
+
+Additional candidate prioritization of significant, same-direction transcript/protein
+trends is documented in [supporting_trends.md](supporting_trends.md). These eight
+outputs supplement the manuscript analyses and do not replace their correction
+families or primary joint-evidence criteria.

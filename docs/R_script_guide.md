@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **78 scripts**: **31 current workflow,
+script in this repository. It covers **81 scripts**: **34 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026. Original module descriptions were checked against
@@ -219,7 +219,7 @@ filename, status and, where appropriate, graphic formats.
 
 **Operations and interpretation:** Defines the initial import/QC, qPCR and historical-audit
 entries, then appends revision_registry(), integration_registry() and toprank_registry().
-There are 70 artifact IDs, including fifteen dataset-ranking outputs. This is
+There are 78 artifact IDs, including fifteen dataset-ranking outputs. This is
 registration/configuration code, not a model fit.
 
 **Structure:** Top-level commands; no named functions are defined.
@@ -1273,3 +1273,47 @@ There is one catalogue heading for each tracked R source file. Generated local
 `provenance.R` run records are described under `R/reproduce.R` and are excluded
 from the source-file count. This guide contains no experimental measurements or
 generated result tables.
+
+
+## Supporting trend prioritization added after investigator clarification
+
+### [`R/supporting_trends.R`](../R/supporting_trends.R)
+
+Prioritizes significant, same-direction RNA/protein effects using the unchanged
+integration fits and positive four-condition mean-profile Pearson correlation.
+Inputs are external arrays, protein matrices, supplied mappings and gene names.
+Outputs include all-result audits, ranked and same-tissue dual-category candidates,
+three-dataset salt agreement, counts, plotted observations, a PDF report and a
+four-format profile figure. This is a post hoc candidate screen, not a replacement
+for the original joint global BH/BY inference.
+
+**Functions:** `supporting_settings()` defines thresholds and ranking;
+`supporting_cells()` computes four observed-value condition means;
+`supporting_profile()` reports descriptive Pearson/Spearman correlations;
+`supporting_flag()` applies assay-wise significance, sign and profile criteria;
+`supporting_order()` ranks without changing q values; `supporting_dual()` requires
+salt and genotype support in the same tissue; `supporting_three_datasets()` adds
+same-direction Array 1 salt support. `supporting_results()` orchestrates matching,
+names, sensitivities and caching; `supporting_signal()` exports plotted pools.
+`supporting_label()`, `supporting_page()`, `supporting_text()` and
+`supporting_print_table()` format the five-page `supporting_report()`.
+`supporting_figure()` shows raw pools and four-mean scatterplots.
+`build_supporting_audit()`, `build_supporting_ranked()`, `build_supporting_dual()`,
+`build_supporting_three()`, `build_supporting_summary()`, `build_supporting_signal()`,
+`build_supporting_report()` and `build_supporting_profiles()` are independent
+artifact wrappers; `supporting_registry()` registers all eight outputs. Local
+`key()` functions build deterministic matching keys and `entry()` builds registry
+records. See [supporting_trends.md](supporting_trends.md) for inference and naming.
+
+### [`scripts/reproduce_supporting.R`](../scripts/reproduce_supporting.R)
+
+Rebuilds all eight supporting-trend outputs from external inputs. Uses bootstrap,
+`inside()` containment checks, an input cache and `run_artifact()` provenance.
+Every output can also be reproduced individually with `scripts/reproduce.R`.
+
+### [`tests/supporting_tests.R`](../tests/supporting_tests.R)
+
+Uses synthetic values only to check dual-assay significance, effect direction,
+positive profiles, missing and boundary cases, four-condition means/correlation,
+same-tissue salt/genotype overlap, deterministic ordering and preserved q values.
+No named helper functions are defined. No experimental measurements are embedded.
