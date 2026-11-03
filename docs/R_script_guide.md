@@ -52,7 +52,7 @@ Rscript --vanilla scripts/reproduce_figures.R
 Rscript --vanilla scripts/reproduce_integration.R
 ```
 
-`reproduce_figures.R` builds six original manuscript figures;
+`reproduce_figures.R` builds five current non-integration manuscript figures;
 `reproduce_integration.R` adds the two integration figures and integration tables.
 For each final manuscript table/figure and its exact command, see
 [manuscript_outputs.md](manuscript_outputs.md). Model definitions and qualifications
@@ -460,7 +460,8 @@ silently applied to this original analysis.
 
 ### [`R/revision_figures.R`](../R/revision_figures.R)
 
-Defines shared publication styling and the six original manuscript figure renderers, including
+Defines shared publication styling and six non-integration figure renderers (five current
+outputs plus the historical pre-stress graphic), including
 descriptive qPCR.
 
 **Inputs and outputs:** Uses revised models/validated summaries; produces PDF/SVG vectors, 600
