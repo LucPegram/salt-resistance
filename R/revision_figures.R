@@ -154,7 +154,13 @@ build_revision_protein_figure <- function(inputs,settings,destination) {
         labels=paste0(c("No-0\n0","No-0\n75","NIT2\n0","NIT2\n75"),"\nn=",counts))
       for(cell in 1:4){
         v<-y[m$cell==levels(m$cell)[cell]];genotype<-if(cell<=2)"No-0" else "NIT2"
-        if(any(is.finite(v)))segments(cell-.23,mean(v,na.rm=TRUE),cell+.23,mean(v,na.rm=TRUE),lwd=1.6)
+        observed<-v[is.finite(v)]
+        # With one observed pool, show only that pool rather than a degenerate box.
+        if(length(observed)>=2L)boxplot(list(observed),at=cell,add=TRUE,axes=FALSE,
+          boxwex=.5,outline=FALSE,range=1.5,
+          col=grDevices::adjustcolor(publication_colors[genotype],alpha.f=.16),
+          border=publication_colors[genotype],lwd=.9,medlwd=1.4,
+          medcol=publication_colors["ink"],whisklty=1,staplewex=.5)
         points(cell+c(-.14,0,.14),v,pch=if(cell%%2==1)21 else 24,
           bg=publication_colors[genotype],col="white",lwd=.5,cex=1.15)
       }
@@ -162,8 +168,8 @@ build_revision_protein_figure <- function(inputs,settings,destination) {
       publication_title(LETTERS[(i-1)*3+j],paste(label,inputs[[i]]$spec$tissue),
         paste0(z$annotations$Protein.Group[k],"   |   ",sum(is.finite(y)),"/12 observed"))
     }
-    publication_key(FALSE,paste0("NaCl (mM) and observed n below genotype; circles: control; triangles: salt; bars: means\n",
-      "*AHA2-labelled group; isoform specificity is unresolved"))
+    publication_key(FALSE,paste0("Circles: control; triangles: salt; boxes: median / hinges; whiskers: 1.5 x IQR; n=1: point only\n",
+      "NaCl (mM) and observed n below genotype. *AHA2-labelled group; isoform specificity is unresolved"))
   })
 }
 

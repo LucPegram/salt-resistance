@@ -16,9 +16,15 @@ test results retain HKT1. Historical summary figures remain separate outputs.
   horizontal offsets separate observations; mean lines use the true dose values.
 - Dose-panel subtitles also show the selected transcript tissue-by-dose BH
   value from correction across all 29,391 transcript IDs.
-- Protein panels retain all available pool measurements and observed log-scale
-  means, with observed pool counts for each cell. Missing values are never drawn as artificial observations. AHA2 group
+- Figure 2 overlays all available pool measurements on boxplots of observed
+  log2 abundance. Boxes show medians and Tukey hinges; whiskers reach the most
+  extreme observations within 1.5 times the hinge spread. Outlying values are
+  displayed once as pool points. A cell with one observed pool has a point only,
+  without a box; empty cells remain empty. The prior mean bars are replaced by
+  these distribution summaries. Observed pool counts remain below each cell.
+  Missing values are never drawn as artificial observations. AHA2 group
   specificity and root NIT2 model eligibility remain qualified in figure legends.
+  This presentation change does not alter observations, fitted models or tests.
 - Contrast panels retain pointwise moderated intervals. BH values sit in their
   own aligned column. Neither intervals nor display colour represent an
   additional significance test.
