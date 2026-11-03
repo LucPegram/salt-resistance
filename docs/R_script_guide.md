@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **84 scripts**: **37 current workflow,
+script in this repository. It covers **85 scripts**: **38 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026. Original module descriptions were checked against
@@ -1351,3 +1351,14 @@ input/code hashes and marks completion. It has no positional arguments. The loca
 Synthetic independent rank-mean verification, control-exclusion and separate-tissue
 fitting checks, plus tie handling. No experimental measurements are included.
 Top-level test commands; no named functions.
+
+### [`scripts/compare_normalization_runs.R`](../scripts/compare_normalization_runs.R)
+
+Compares completed scaling and quantile analysis releases. Reads genotype contrast
+tables, dose joint tests and supporting rankings. Writes significant-set overlap,
+lost/gained counts, fold-change agreement and candidate-level changes, without
+fitting a new model or using discovery counts to select normalization. Distinct
+external roots and completed input artifacts are required. Local helpers are
+`inside()` for containment, `read()` for completed-file imports, `compare()` for
+matched-universe sensitivity summaries, and `key()` for candidate identity.
+Provenance records inputs, code, outputs and the Git revision.

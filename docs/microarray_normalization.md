@@ -88,3 +88,21 @@ historical saved summaries; they are not silently relabelled as new inference.
 preprocessing run has its own completion/provenance records and is not an extra
 registered manuscript artifact. The existing artifact IDs remain independently
 reproducible from the new input root.
+
+## Compare completed inference with the supplied-scaling baseline
+
+```sh
+export SALT_BASELINE_REVISION_ROOT=/absolute/path/to/old/revision_outputs
+export SALT_BASELINE_SUPPORTING_ROOT=/absolute/path/to/old/supporting_outputs
+export SALT_OUTPUT_ROOT=/absolute/path/to/quantile_reanalysis
+export SALT_COMPARISON_ROOT=/absolute/path/to/normalization_comparison
+Rscript --vanilla scripts/compare_normalization_runs.R
+```
+
+This produces overlap/loss/gain counts for all three dose joint tests and seven
+genotype-array contrasts, plus candidate-level retention across the supporting
+transcript/protein screen. Effect changes are compared within the same models and
+testing universes. An overall offset between normalized abundance scales is
+arbitrary and is not interpreted as a biological effect. These sensitivity
+results describe consequences of the method choice; they do not choose the method.
+All input/output/code hashes are recorded in the comparison run.
