@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **81 scripts**: **34 current workflow,
+script in this repository. It covers **84 scripts**: **37 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026. Original module descriptions were checked against
@@ -1317,3 +1317,37 @@ Uses synthetic values only to check dual-assay significance, effect direction,
 positive profiles, missing and boundary cases, four-condition means/correlation,
 same-tissue salt/genotype overlap, deterministic ordering and preserved q values.
 No named helper functions are defined. No experimental measurements are embedded.
+
+## Microarray preprocessing additions
+
+### [`R/normalization.R`](../R/normalization.R)
+
+Assesses scaling, quantile and cyclic-loess methods on processed Agilent signals;
+writes a separate quantile input root without changing original measurements.
+Inputs are two processed-signal workbooks, 32 sample exports, corrected mappings
+and the three supplied normalized matrices. Outputs include feature-QC records,
+method diagnostics, distribution figures and three regenerated RNA matrices.
+Controls are held out of fitting. Protein and qPCR files are linked unchanged.
+
+**Functions:** `normalization_settings()` defines the method contract;
+`normalization_paths()` enumerates source files; `normalization_feature_file()`
+reads complete feature exports; `normalization_sources()` validates workbook and
+export identity/signals and collects QC; `normalization_duplicate_mad()` measures
+repeat-spot dispersion; `normalization_variants()` fits all methods and metrics;
+`normalization_comparison()` audits supplied scaling and new values;
+`normalization_diagnostics_figure()` exports distributions;
+`normalization_prepare_root()` creates the separate analysis input root.
+Local helpers are `canonical()`, `control_rms()` and `inside()`.
+
+### [`scripts/renormalize_microarrays.R`](../scripts/renormalize_microarrays.R)
+
+Command-line preprocessing entry point. Requires distinct external original,
+normalized-input and diagnostics roots. Writes preprocessing provenance, verifies
+input/code hashes and marks completion. It has no positional arguments. The local
+`inside()` helper checks containment. See [normalization methods](microarray_normalization.md).
+
+### [`tests/normalization_tests.R`](../tests/normalization_tests.R)
+
+Synthetic independent rank-mean verification, control-exclusion and separate-tissue
+fitting checks, plus tie handling. No experimental measurements are included.
+Top-level test commands; no named functions.

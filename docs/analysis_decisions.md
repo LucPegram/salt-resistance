@@ -6,10 +6,12 @@ One independently grown plant pool is a biological replicate. Plants within a
 pool are not additional replicates. Root–shoot measurements from one harvested
 pool are paired. Matching numbers do not establish cross-treatment pairing.
 
-Microarrays begin with supplied normalized matrices. Remove unmapped rows,
+Primary microarray analyses begin with quantile-normalized matrices regenerated
+from supplied processed signals; the original normalized matrices remain a
+scaling baseline. See [normalization assessment](microarray_normalization.md). Remove unmapped rows,
 log2-transform positive values without a pseudocount, and average repeated exact
 transcript IDs. Retain transcript suffixes. Do not call transcript IDs gene loci
-or resolved isoforms. Undocumented upstream normalization is not reconstructed.
+or resolved isoforms. Vendor background processing and probe remapping specificity are not reconstructed.
 
 Retain complete protein-group identities. Historical retention requires more
 than one sequence and at least two observed values in at least one condition.

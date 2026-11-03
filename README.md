@@ -7,6 +7,7 @@ excluded. Every registered output can be rebuilt separately from external inputs
 
 ## Organization
 
+- `R/normalization.R`: assessment and quantile normalization of external Agilent processed signals.
 - `R/inputs.R`: validated imports and transcript/protein filtering.
 - `R/revision_models.R`: factorial contrasts, paired dose models, missingness
   sensitivities and disjoint-control resemblance calculations.
@@ -25,8 +26,11 @@ excluded. Every registered output can be rebuilt separately from external inputs
 - `legacy/`: original source scripts, inactive and retained for inspection.
 - `docs/`: analysis decisions, output commands and limitations.
 
-The revised workflow fits models from supplied quantitative matrices. It does not
-claim to reconstruct undocumented upstream acquisition or normalization. Archived
+The revised workflow fits models from quantitative matrices. The primary RNA
+workflow now regenerates between-array normalization from supplied processed
+signals; [normalization methods and commands](docs/microarray_normalization.md)
+describe the assessment and separate input root. It does not reconstruct scanner
+acquisition, vendor background processing or mapping specificity. Archived
 scripts are not executed automatically or represented as validated analyses.
 
 ## Environment
@@ -39,6 +43,8 @@ Rscript --vanilla scripts/check_environment.R
 Rscript --vanilla tests/run_tests.R
 Rscript --vanilla tests/integration_tests.R
 Rscript --vanilla tests/toprank_tests.R
+Rscript --vanilla tests/supporting_tests.R
+Rscript --vanilla tests/normalization_tests.R
 ```
 
 The lock records exact installed sources and versions. These checks do not prove
@@ -54,7 +60,7 @@ obtained `references/P19456.fasta`. Relative paths are in `config/inputs.R`.
 The analysis does not upload measurements or download substitute experiments.
 
 ```sh
-export SALT_DATA_ROOT=/absolute/path/to/extracted/source_data
+export SALT_DATA_ROOT=/absolute/path/to/analysis_inputs/quantile
 export SALT_OUTPUT_ROOT=/absolute/path/to/local/analysis_outputs
 Rscript --vanilla scripts/reproduce.R --list
 Rscript --vanilla scripts/reproduce.R table_revision_primary_candidates
@@ -64,6 +70,11 @@ Rscript --vanilla scripts/reproduce_integration.R
 Rscript --vanilla scripts/reproduce_toprank.R
 Rscript --vanilla scripts/reproduce.R all
 ```
+
+For primary RNA analyses, first create that quantile input root using
+`scripts/renormalize_microarrays.R` and the commands in
+[docs/microarray_normalization.md](docs/microarray_normalization.md). Pointing
+`SALT_DATA_ROOT` at the original files reproduces the supplied-scaling baseline.
 
 The output root defaults to the ignored `outputs/` directory. Each output records
 input/code/output SHA256 hashes, effective settings, package versions, a Git

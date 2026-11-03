@@ -57,6 +57,7 @@ run_artifact <- function(id, project_root, data_root, output_root, cache = new.e
     input_sha256 = before, settings = analysis_settings,
     integration_settings = if (grepl("integration", id, fixed = TRUE) || grepl("supporting", id, fixed = TRUE)) integration_settings() else NULL,
     supporting_settings = if (grepl("supporting", id, fixed = TRUE)) supporting_settings() else NULL,
+    microarray_normalization = if(file.exists(file.path(data_root,"NORMALIZATION_PROVENANCE.R"))) dget(file.path(data_root,"NORMALIZATION_PROVENANCE.R")) else NULL,
     code_sha256 = code_before,
     output_sha256 = setNames(vapply(output_paths, hash, ""), basename(output_paths)),
     R_version = R.version.string,

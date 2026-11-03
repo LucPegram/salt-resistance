@@ -197,9 +197,10 @@ supporting_report <- function(result,destination) {
       c('Gene / AGI','Tissue','Salt RNA','Salt protein','Geno RNA','Geno protein','Worst q','Profile r'),
       c(.045,.39,.49,.59,.69,.79,.87,.94),y=.56,step=.047,cex=.78)
   }
-  supporting_text('The displayed salt contrast is salt minus control in No-0; the displayed genotype contrast is NIT2 minus No-0 under salt. Values are log2 differences; each gene has significant, concordant changes in both assays in both comparisons. Full effects, pointwise intervals and q values are in supporting_dual.csv.',.32)
-  supporting_text('Rank by the largest assay q (smaller is stronger), then profile correlation and the smaller absolute effect. These are post hoc supporting candidates, not a new joint-FDR discovery set. Original directional-conjunction family/global BH and global BY results remain in every audit; the stricter global-joint results are shown on page 5.',.19)
-  supporting_text('Array 2 uses combined tissues at 0/100 mM; proteins use separate tissues at 0/75 mM. Agreement is useful evidence for prioritization. It does not require equal signal scales or a resolved explanation for other discordant genes.',.075,cex=.85)
+  supporting_text('Values are log2 differences. Each selected gene has significant, concordant changes in both assays in one salt and one genotype comparison. The selected contrasts for each row are listed below; full effects, pointwise intervals and q values are in supporting_dual.csv.',.32)
+  supporting_text(paste(vapply(seq_len(nrow(dual)),function(i)paste0(dual$locus[i],': ',supporting_label(dual$salt_contrast[i]),' + ',supporting_label(dual$genotype_contrast[i])),''),collapse='; '),.225,cex=.78,width=175)
+  supporting_text('Rank by the largest assay q (smaller is stronger), then profile correlation and the smaller absolute effect. These are post hoc supporting candidates, not a new joint-FDR discovery set. Original directional-conjunction family/global BH and global BY results remain in every audit; the stricter global-joint results are shown on page 5.',.155)
+  supporting_text('Array 2 uses combined tissues at 0/100 mM; proteins use separate tissues at 0/75 mM. Agreement is useful evidence for prioritization. It does not require equal signal scales or a resolved explanation for other discordant genes.',.055,cex=.85)
 
   supporting_page('Top supporting salt responses','Ten per protein tissue, ordered by the weaker of the two assay q values; all are No-0 salt versus control')
   for(t in c('Root','Shoot')){
@@ -241,7 +242,9 @@ supporting_report <- function(result,destination) {
 
 supporting_figure <- function(result,destination) {
   selected<-head(result$dual,supporting_settings()$profile_genes);signal<-supporting_signal(result)
-  if(!nrow(selected))stop('No supported salt-plus-genotype candidates; no nonsignificant panels substituted')
+  if(!nrow(selected)){
+    publication_figure(destination,9,5,function(){plot.new();text(.5,.6,'No gene meets both salt and genotype support criteria',cex=1.1);text(.5,.4,'No nonsignificant candidate has been substituted.',cex=.9)});return(invisible(destination))
+  }
   n<-nrow(selected)
   publication_figure(destination,9,9.1,function(){
     par(mfrow=c(3,n),mar=c(4.5,4,3.4,.8),oma=c(1.5,0,1.9,0))
