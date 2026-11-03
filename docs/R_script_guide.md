@@ -1,11 +1,12 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **75 scripts**: **28 current workflow,
+script in this repository. It covers **78 scripts**: **31 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
-Descriptions were checked against source revision
-[`c1c3847`](https://github.com/LucPegram/salt-resistance/tree/c1c3847f630b87c36ee3d0f9f7adc0974460c869)
-on 3 November 2026. This documentation update changes no analysis code.
+Descriptions cover the source shipped with this guide, including the dataset-ranking
+module added on 3 November 2026. Original module descriptions were checked against
+[`c1c3847`](https://github.com/LucPegram/salt-resistance/tree/c1c3847f630b87c36ee3d0f9f7adc0974460c869);
+[dataset-ranking methods](top_rankings.md) explain the additional analysis.
 
 The current assays are **gene-expression microarrays**, not mature-microRNA
 measurements. Statistical replication is at the independently grown plant-pool
@@ -197,7 +198,7 @@ the environment specification; it does not restore packages or run analyses.
 ### [`config/analysis.R`](../config/analysis.R)
 
 Defines analysis_settings: random seed, original protein-retention thresholds, genotype/tissue
-levels and qPCR group labels.
+levels, qPCR group labels and dataset-ranking settings.
 
 **Inputs and outputs:** Creates an R list in memory; contains settings rather than
 observations.
@@ -216,8 +217,9 @@ Assembles artifact_registry, the dispatch catalogue for independently reproducib
 filename, status and, where appropriate, graphic formats.
 
 **Operations and interpretation:** Defines the initial import/QC, qPCR and historical-audit
-entries, then appends revision_registry() and integration_registry(). The inspected source
-revision contains 54 artifact IDs. This is registration/configuration code, not a model fit.
+entries, then appends revision_registry(), integration_registry() and toprank_registry().
+There are 69 artifact IDs, including fifteen dataset-ranking outputs. This is
+registration/configuration code, not a model fit.
 
 **Structure:** Top-level commands; no named functions are defined.
 
@@ -230,7 +232,8 @@ associations and explicitly enumerated historical GO files.
 **Inputs and outputs:** Paths are resolved against SALT_DATA_ROOT by read_input(); this file
 reads no measurements itself.
 
-**Operations and interpretation:** Calls legacy_result_specs() from manuscript_evidence.R.
+**Operations and interpretation:** Also declares the supplied gene-name annotation input for
+dataset rankings. Calls legacy_result_specs() from manuscript_evidence.R.
 Merely declaring a path does not require its file for every artifact: each registry entry
 specifies which inputs it needs.
 
@@ -271,7 +274,8 @@ corrected transcript IDs; collapse_microarray() averages repeated exact transcri
 log2 scale and retains transcript suffixes. read_proteomics() preserves full protein-group
 identities and constructs metadata; proteomics_keep() applies the original retention rule.
 read_qpcr_summary() checks group means/STE without inventing replication. read_input()
-dispatches by assay, including historical and GO readers defined in other modules.
+dispatches by assay, including historical, GO and gene-name annotation readers defined in
+other modules.
 
 **Named functions, including local helpers:** `assert_columns()`, `as_numeric_checked()`,
 `read_microarray()`, `collapse_microarray()`, `read_proteomics()`, `proteomics_keep()`,
@@ -1192,6 +1196,64 @@ first peptide-table match per AGI, so this is not guaranteed to preserve every p
 gene.
 
 **Structure:** Top-level commands; no named functions are defined.
+
+## Dataset-ranking additions
+
+### [`R/toprank.R`](../R/toprank.R)
+
+Builds the requested three dataset-specific top-20 up/down tables and top-10
+up/down signal-versus-treatment figures, plus complete ranking and signal audits.
+
+**Inputs and outputs:** Uses external array/protein matrices, supplied gene-name
+annotations and saved protein AGI mappings. Registers fifteen independently
+reproducible CSV, table-PDF and four-format figure artifacts.
+
+**Operations and interpretation:** `toprank_contrast_label()` writes readable
+comparison labels. `read_toprank_annotation()`, `toprank_annotation()` and
+`toprank_add_names()` import and attach supplied symbols, aliases and functional
+names without inventing missing symbols. `toprank_dose()` fits locus-level paired
+categorical dose contrasts; `toprank_protein()` selects observed-model protein
+statistics with strict identity eligibility. `toprank_select()` corrects before
+ranking and chooses one representative tissue per locus. `toprank_result()`
+assembles/caches a dataset result; `toprank_signal()` exports plotted observations.
+`toprank_table_pdf()` and `toprank_figure()` render the tables and trajectories.
+`build_toprank()` dispatches output types, `toprank_registry()` declares artifacts,
+and fifteen `build_toprank_<dataset>_<kind>()` wrappers expose independent
+builders. The wrappers cover each of `array1`, `array2`, `proteomics` and each of
+`table`, `audit`, `signal`, `print`, `figure`. These descriptive rankings have
+explicit correction families and do not replace original manuscript inference.
+
+**Named functions:** `toprank_contrast_label()`, `read_toprank_annotation()`,
+`toprank_annotation()`, `toprank_add_names()`, `toprank_dose()`, `toprank_protein()`,
+`toprank_select()`, `toprank_result()`, `toprank_signal()`, `toprank_table_pdf()`,
+`toprank_figure()`, `build_toprank()`, `toprank_registry()`, `build_toprank_array1_table()`,
+`build_toprank_array1_audit()`, `build_toprank_array1_signal()`,
+`build_toprank_array1_print()`, `build_toprank_array1_figure()`,
+`build_toprank_array2_table()`, `build_toprank_array2_audit()`,
+`build_toprank_array2_signal()`, `build_toprank_array2_print()`,
+`build_toprank_array2_figure()`, `build_toprank_proteomics_table()`,
+`build_toprank_proteomics_audit()`, `build_toprank_proteomics_signal()`,
+`build_toprank_proteomics_print()`, `build_toprank_proteomics_figure()`.
+
+### [`scripts/reproduce_toprank.R`](../scripts/reproduce_toprank.R)
+
+Rebuilds all fifteen dataset-ranking artifacts using the normal bootstrap,
+validated imports and provenance runner.
+
+**Inputs and outputs:** Requires separate external input/output roots and writes
+all three tables, table PDFs, treatment figures, full candidate audits and plotted
+signal exports. Its named local `inside()` helper checks directory containment.
+No data are written into tracked repository paths.
+
+### [`tests/toprank_tests.R`](../tests/toprank_tests.R)
+
+Runs synthetic checks of ranking-specific multiplicity, direction, effect ordering,
+distinct-locus selection, symbol/functional-name parsing and paired dose effects.
+
+**Inputs and outputs:** Uses invented values and annotations, printing success or
+stopping on failure; no experimental data are used. A local `make()` helper
+constructs synthetic root/shoot input objects. Expected dose effects are checked
+against independently calculated cell-mean differences.
 
 ## Maintaining this guide
 

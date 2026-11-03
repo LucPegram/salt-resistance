@@ -74,4 +74,5 @@ artifact_registry <- c(artifact_registry, list(
 
 artifact_registry <- c(artifact_registry, revision_registry())
 artifact_registry <- c(artifact_registry, integration_registry())
+artifact_registry <- c(artifact_registry, toprank_registry())
 

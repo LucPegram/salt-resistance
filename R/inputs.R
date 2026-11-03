@@ -120,6 +120,7 @@ read_input <- function(id, data_root, specs) {
   if (is.null(spec)) stop("Unknown input: ", id)
   path <- file.path(data_root, spec$path)
   if (!file.exists(path)) stop("Required external input not found: ", path)
+  if (spec$assay == "gene_annotation") return(read_toprank_annotation(path, spec))
   if (spec$assay == "go_associations") return(read_revision_associations(path, spec))
   if (startsWith(spec$assay, "legacy_")) return(read_legacy(path, spec))
   switch(spec$assay,

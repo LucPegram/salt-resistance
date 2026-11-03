@@ -25,6 +25,8 @@ input_specs <- list(
     assay = "qpcr_summary", sheet = "Average Normalized expression")
 )
 input_specs <- c(input_specs, legacy_result_specs())
+input_specs$gene_annotation <- list(path="Microarray_for_Stephano/Stu_MappingDescription.csv",
+  assay="gene_annotation")
 input_specs$aha2_reference <- list(path = "references/P19456.fasta", assay = "legacy_fasta", accession = "P19456")
 input_specs$go_associations <- list(
   path = "Data_from_Luc_2/Proteomics_AgriGO_Analysis/317_slimGO.tsv", assay = "go_associations")

@@ -59,6 +59,12 @@ estimates are unavailable. Interval and correction labels must remain attached.
 | Complete-case ordinary-ANOVA numerical check | `table_proteomics_completecase_audit` |
 
 Use the same single-output command with any registered ID above.
+The additional requested three top-20 tables and three top-10 treatment figures
+are documented in [top_rankings.md](top_rankings.md). They use distinct gene-locus
+rankings and explicit ranking-specific correction families; they do not replace
+the original manuscript tables or statistics. Run
+`Rscript --vanilla scripts/reproduce_toprank.R` to rebuild all fifteen associated
+table, figure, audit and signal artifacts.
 The eight current manuscript figure commands also export SVG, 600-dpi TIFF and
 PNG previews, each recorded in provenance. To rebuild just these six figures,
 run `Rscript --vanilla scripts/reproduce_figures.R`; rebuild the ten integration and reviewer-diagnostic

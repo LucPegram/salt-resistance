@@ -16,6 +16,8 @@ excluded. Every registered output can be rebuilt separately from external inputs
   directional evidence, focused CAMERA pathways and integration figures.
 - `R/reviewer_diagnostics.R`: candidate dose tests, locus influence, joint-hit
   sensitivities and processed-measurement audits requested during review.
+- `R/toprank.R`: three dataset-specific top-gene/protein rankings, naming audits
+  and treatment-response figures; methods in `docs/top_rankings.md`.
 - `R/manuscript_evidence.R`: historical summaries and numerical audits.
 - `config/`: external input paths, analysis settings and output registry.
 - `scripts/`: reproduction, dependency checks and code-publication checks.
@@ -36,6 +38,7 @@ After installing `renv`, run `renv::restore()` from this repository, then check:
 Rscript --vanilla scripts/check_environment.R
 Rscript --vanilla tests/run_tests.R
 Rscript --vanilla tests/integration_tests.R
+Rscript --vanilla tests/toprank_tests.R
 ```
 
 The lock records exact installed sources and versions. These checks do not prove
@@ -58,6 +61,7 @@ Rscript --vanilla scripts/reproduce.R table_revision_primary_candidates
 Rscript --vanilla scripts/reproduce.R figure_revision_protein
 Rscript --vanilla scripts/reproduce_figures.R
 Rscript --vanilla scripts/reproduce_integration.R
+Rscript --vanilla scripts/reproduce_toprank.R
 Rscript --vanilla scripts/reproduce.R all
 ```
 
