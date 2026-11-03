@@ -78,36 +78,70 @@ publication_pool_labels <- function(x,y,labels) {
   }
 }
 
+# All combinations share one PCA within each assay/tissue; do not refit by cell.
+publication_pca_data <- function(inputs) {
+  rows<-lapply(inputs,function(x){
+    d<-revision_qc(x)
+    factorial<-x$spec$assay=="proteomics"||identical(x$spec$tissue,"Combined")
+    if(factorial){
+      m<-factorial_metadata(x);d$genotype<-m$genotype;d$salt_mM<-m$salt_mM
+      d$dataset<-if(x$spec$assay=="proteomics")"Proteomics" else "Array 2"
+    }else{
+      d$genotype<-"Col-0"
+      d$salt_mM<-as.integer(ifelse(startsWith(x$samples,"PN"),"0",sub(" .*","",x$samples)))
+      d$dataset<-"Array 1"
+    }
+    d$replicate<-sub(".*[ _]","",x$samples)
+    d$group<-paste(d$genotype,d$salt_mM,"mM")
+    d
+  })
+  do.call(rbind,rows)
+}
+
+build_manuscript_pca_coordinates <- function(inputs,settings,destination)
+  write_table(publication_pca_data(inputs),destination)
+
 build_revision_qc_figure <- function(inputs,settings,destination) {
-  panels<-lapply(inputs,function(x)list(x=x,d=revision_qc(x)))
+  d<-publication_pca_data(inputs)
+  dose_colors<-c("#677487","#0072B2","#009E73","#D55E00")
   publication_figure(destination,7.2,7.4,function(){
     par(mfrow=c(3,2),mar=c(3.6,4,2.7,.8),oma=c(.5,0,.1,0))
-    for(i in seq_along(panels)){
-      x<-panels[[i]]$x;d<-panels[[i]]$d
-      factorial<-x$spec$assay=="proteomics"||identical(x$spec$tissue,"Combined")
-      if(factorial){
-        m<-factorial_metadata(x);colors<-publication_colors[m$genotype];shapes<-ifelse(m$salt_mM==0,21,24)
+    for(i in seq_along(inputs)){
+      x<-inputs[[i]];z<-d[d$dataset==if(x$spec$assay=="proteomics")"Proteomics" else
+        if(identical(x$spec$tissue,"Combined"))"Array 2" else "Array 1",]
+      z<-z[z$tissue==x$spec$tissue,]
+      if(z$dataset[1]=="Array 1"){
+        k<-match(z$salt_mM,c(0,50,75,100));colors<-dose_colors[k];shapes<-c(21,22,23,24)[k]
       }else{
-        dose<-as.numeric(ifelse(startsWith(x$samples,"PN"),"0",sub(" .*","",x$samples)))
-        k<-match(dose,c(0,50,75,100));colors<-c("#677487","#0072B2","#009E73","#D55E00")[k]
-        shapes<-c(21,22,23,24)[k]
+        colors<-publication_colors[z$genotype];shapes<-ifelse(z$salt_mM==0,21,24)
       }
-      publication_axes(publication_range(d$PC1,.22),publication_range(d$PC2,.22),
-        sprintf("PC1 (%.1f%%)",100*d$PC1_fraction[1]),sprintf("PC2 (%.1f%%)",100*d$PC2_fraction[1]))
-      points(d$PC1,d$PC2,pch=shapes,bg=colors,col="white",cex=1.35,lwd=.6)
-      publication_pool_labels(d$PC1,d$PC2,sub(".*[ _]","",x$samples))
-      publication_title(LETTERS[i],paste(x$spec$tissue,if(x$spec$assay=="proteomics")"proteome" else "microarray"),
-        "Fully observed features; centered without scaling")
+      publication_axes(publication_range(z$PC1,.22),publication_range(z$PC2,.22),
+        sprintf("PC1 (%.1f%%)",100*z$PC1_fraction[1]),sprintf("PC2 (%.1f%%)",100*z$PC2_fraction[1]))
+      abline(h=0,v=0,col="#CCD5DE",lty=3,lwd=.65)
+      points(z$PC1,z$PC2,pch=shapes,bg=colors,col="white",cex=1.4,lwd=.6)
+      publication_pool_labels(z$PC1,z$PC2,z$replicate)
+      title<-paste(z$dataset[1],if(x$spec$tissue=="Combined")"combined tissue" else tolower(x$spec$tissue))
+      units<-if(x$spec$assay=="proteomics")"protein groups" else "transcript IDs"
+      publication_title(LETTERS[i],title,
+        paste0(format(z$PCA_features[1],big.mark=",")," ",units," | ",nrow(z)," pools"))
     }
     plot.new();par(usr=c(0,1,0,1))
-    text(0,.94,"Sample keys",adj=0,font=2,cex=1.05)
-    text(0,.80,"Dose arrays",adj=0,font=2,cex=.9)
-    legend(.02,.75,paste(c(0,50,75,100),"mM NaCl"),pch=c(21,22,23,24),
-      pt.bg=c("#677487","#0072B2","#009E73","#D55E00"),col="white",bty="n",cex=.85,pt.cex=1.5,ncol=2,x.intersp=.6)
-    text(0,.43,"Genotype arrays and proteomes",adj=0,font=2,cex=.9)
-    legend(.02,.38,c("No-0","NIT2","Control","Salt"),pch=c(21,21,21,24),
-      pt.bg=c(publication_colors[c("No-0","NIT2")],"#677487","#677487"),col="white",bty="n",cex=.85,pt.cex=1.5,ncol=2,x.intersp=.6)
-    text(0,.06,"Labels identify biological pools. No imputation.",adj=0,cex=.78,col=publication_colors["muted"])
+    key<-function(x,y,label,shape,color){
+      points(x,y,pch=shape,bg=color,col="white",cex=1.25)
+      text(x+.035,y,label,adj=0,cex=.76)
+    }
+    text(0,.96,"Treatment and genotype keys",adj=0,font=2,cex=.94)
+    text(0,.84,"Array 1 | Col-0",adj=0,font=2,cex=.84)
+    for(j in 1:4)key(c(.04,.04,.55,.55)[j],c(.73,.62,.73,.62)[j],
+      paste(c(0,50,75,100)[j],"mM"),c(21,22,23,24)[j],dose_colors[j])
+    text(0,.48,"Array 2 and proteomics",adj=0,font=2,cex=.84)
+    labels<-c("No-0 control","No-0 salt","NIT2 control","NIT2 salt")
+    for(j in 1:4)key(c(.04,.04,.55,.55)[j],c(.37,.26,.37,.26)[j],labels[j],
+      c(21,24,21,24)[j],publication_colors[c("No-0","No-0","NIT2","NIT2")][j])
+    text(0,.14,"Salt: Array 2, 100 mM; proteomics, 75 mM",adj=0,cex=.69)
+    text(0,.05,"Labels: pool IDs; centered, unscaled; no imputation.",adj=0,cex=.65,
+      col=publication_colors["muted"])
+
   })
 }
 

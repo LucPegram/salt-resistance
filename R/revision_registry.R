@@ -15,6 +15,7 @@ revision_registry <- function() {
     table_revision_identity = entry(protein,"build_revision_identity","candidate_identity.csv"),
     table_revision_prestress = entry(c(genotype,protein),"build_revision_prestress","prestress_similarity.csv","exploratory resemblance"),
     table_revision_qc = entry(c(dose,genotype,protein),"build_revision_qc","sample_qc.csv"),
+    table_manuscript_pca = entry(c(dose,genotype,protein),"build_manuscript_pca_coordinates","PCA_coordinates.csv","descriptive sample PCA"),
     table_revision_model_qc = entry(c(dose,protein),"build_revision_model_qc","model_diagnostics.csv"),
     table_revision_primary_summary = entry(c(genotype,protein),"build_revision_primary_summary","primary_summary.csv"),
     table_revision_primary_candidates = entry(protein,"build_revision_primary_candidates","primary_candidates.csv"),

@@ -1,6 +1,6 @@
 # Manuscript figure presentation
 
-The eight current manuscript figures use one set of base-R drawing helpers in
+The seven current manuscript figures use one set of base-R drawing helpers in
 `R/revision_figures.R`. Models, biological replicates, feature selection,
 observations, uncertainty estimates and correction levels are unchanged by
 presentation choices. Figure 1D was subsequently changed at the investigator's
@@ -28,12 +28,20 @@ test results retain HKT1. Historical summary figures remain separate outputs.
 - Contrast panels retain pointwise moderated intervals. BH values sit in their
   own aligned column. Neither intervals nor display colour represent an
   additional significance test.
-- The resemblance figure retains every feature and extreme value. Its lower
-  panel leads the figure and displays the already defined shared-control and all disjoint-control
-  correlations. The connecting line spans the disjoint-split range; it is not a
-  confidence interval. Small vertical offsets separate the individual splits.
-- PCA uses unchanged coordinates. Deterministic label placement reduces
-  collisions, and sample keys occupy a separate panel.
+- Figure 4 replaces the former pre-stress resemblance graphic with five PCA
+  panels: Array 1 roots and shoots, Array 2 combined tissue, and proteomics roots
+  and shoots. All treatment/genotype combinations are fitted together within
+  each panel. The existing centered, unscaled complete-feature coordinates are
+  retained; no missing values are filled. PCA is not fitted separately within
+  two- or three-pool cells. The axes give explained variance; subtitles give
+  feature and pool counts. Every pool is labelled. The key explicitly identifies
+  all four Col-0 doses and all four No-0/NIT2 by control/salt combinations.
+  No confidence ellipse, sample exclusion or significance claim is added.
+  `table_manuscript_pca` exports every coordinate with dataset, genotype, dose,
+  tissue, sample and pool labels. The former resemblance output stays available
+  as a historical registered artifact; its numeric sensitivity results remain
+  in Table 4. PCA is promoted from the supplement, where qPCR and pathway figures
+  are renumbered S1 and S2 to avoid duplication.
 - qPCR uses separate root/shoot panels with independently labelled y axes.
   Points remain reported group means and error bars remain the supplied STE.
   Short error bars can be covered by the mean symbols; no missing error is

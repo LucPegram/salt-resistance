@@ -75,7 +75,7 @@ model results. Keys include input, relevant source, setting and package-version
 hashes. Cached payloads are hash-checked. A fresh run without a cache is supported.
 Caches are derived data and must never be pushed.
 
-The eight current manuscript figures use consistent publication styling and export
+The seven current manuscript figures use consistent publication styling and export
 vector PDF/SVG, 600-dpi TIFF and PNG previews. All formats are hash-recorded.
 `docs/figure_design.md` describes visual encodings and display qualifications.
 

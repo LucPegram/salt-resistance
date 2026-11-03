@@ -137,11 +137,12 @@ successful parse is not evidence that a historical analysis was executed.
 
 ### [`scripts/reproduce_figures.R`](../scripts/reproduce_figures.R)
 
-Rebuilds the six original manuscript figure artifacts: dose trajectories, observed proteins,
-contrast intervals, pre-stress sensitivity, PCA and candidate qPCR.
+Rebuilds five current non-integration manuscript figure artifacts: dose trajectories,
+observed proteins, contrast intervals, treatment/genotype PCA and candidate qPCR.
+The former pre-stress graphic is historical and is not rebuilt by this entry point.
 
 **Inputs and outputs:** Requires SALT_DATA_ROOT and SALT_OUTPUT_ROOT. Produces PDF, SVG, TIFF
-and PNG for each of these six figures, with provenance records.
+and PNG for each of these five figures, with provenance records.
 
 **Operations and interpretation:** The local inside() helper checks directory containment.
 This script does not build the two additional integration figures; use reproduce_integration.R
@@ -159,7 +160,7 @@ two figure artifacts with provenance.
 
 **Operations and interpretation:** Uses integration_registry() to determine the outputs, the
 local inside() helper to enforce directory separation, and run_artifact() to build each
-independently. Includes the two integration figures needed to complete the eight manuscript
+independently. Includes the two integration figures needed to complete the seven manuscript
 figures.
 
 **Named functions, including local helpers:** `inside()`.
@@ -218,7 +219,7 @@ filename, status and, where appropriate, graphic formats.
 
 **Operations and interpretation:** Defines the initial import/QC, qPCR and historical-audit
 entries, then appends revision_registry(), integration_registry() and toprank_registry().
-There are 69 artifact IDs, including fifteen dataset-ranking outputs. This is
+There are 70 artifact IDs, including fifteen dataset-ranking outputs. This is
 registration/configuration code, not a model fit.
 
 **Structure:** Top-level commands; no named functions are defined.
@@ -470,7 +471,10 @@ publication_range(), publication_axes(), publication_title(), publication_key() 
 publication_pool_labels() control ranges, axes, headings, legends and deterministic label
 placement. publication_colors stores shared colours. revision_candidate_transcript() chooses
 .1 when available, otherwise the first sorted transcript ID, independently of significance.
-build_revision_qc_figure() plots PCA; build_revision_dose_figure() adds direct tissue-by-dose
+publication_pca_data() adds dataset, genotype, salt and pool labels to the unchanged
+PCA coordinates; build_manuscript_pca_coordinates() exports this sample table.
+build_revision_qc_figure() plots the five PCA panels in current Figure 4, using a local
+key() helper for explicit treatment/genotype keys; build_revision_dose_figure() adds direct tissue-by-dose
 q values; build_revision_protein_figure() shows observed pools and cell counts;
 build_revision_contrast_figure() shows contrasts and intervals;
 build_revision_prestress_figure() leads with the control-sharing sensitivity.
@@ -479,6 +483,7 @@ reconstructing replicate-level tests.
 
 **Named functions, including local helpers:** `publication_figure()`, `publication_range()`,
 `publication_axes()`, `publication_title()`, `publication_key()`, `publication_pool_labels()`,
+`publication_pca_data()`, `build_manuscript_pca_coordinates()`,
 `build_revision_qc_figure()`, `revision_candidate_transcript()`,
 `build_revision_dose_figure()`, `build_revision_protein_figure()`,
 `build_revision_contrast_figure()`, `build_revision_prestress_figure()`,

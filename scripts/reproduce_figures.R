@@ -1,4 +1,5 @@
-# Rebuild the four current main figures and two supplementary figures together.
+# Rebuild four current main figures and the qPCR supplementary figure.
+# The two integration figures are built by reproduce_integration.R.
 script <- sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value=TRUE))
 source(file.path(dirname(script), "bootstrap.R"))
 if (length(commandArgs(TRUE))) stop("No arguments; set the external roots in the environment")
@@ -13,6 +14,6 @@ if (inside(data_root,project_root) || inside(output_root,data_root) || inside(da
     (inside(output_root,project_root) && !inside(output_root,file.path(project_root,"outputs"))))
   stop("Keep original data external and separate from generated outputs")
 ids <- c("figure_revision_dose", "figure_revision_protein", "figure_revision_contrasts",
-  "figure_revision_prestress", "figure_revision_qc", "figure_manuscript_qpcr_candidates")
+  "figure_revision_qc", "figure_manuscript_qpcr_candidates")
 cache <- new.env(parent=emptyenv())
 for (id in ids) run_artifact(id,project_root,data_root,output_root,cache)
