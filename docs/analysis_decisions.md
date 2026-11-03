@@ -67,6 +67,7 @@ molecules as biological replicates. Protection requires physiological evidence.
 
 Use supplied gene–GO associations with ancestor propagation through pinned GO.db.
 Their original release is undocumented. Eligible genes require a single accession,
+at least one reported proteotypic sequence,
 unambiguous unique AGI assignment, primary-model eligibility and annotation.
 Exclude duplicate locus mappings rather than choosing the first group.
 

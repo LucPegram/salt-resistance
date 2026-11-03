@@ -33,7 +33,8 @@ build_revision_enrichment <- function(inputs,settings,destination) {
     # eligible for this gene-level analysis; no first accession substitution.
     idx<-match(d$Protein.Group,saved$Protein.Group)
     loci<-saved$AGI[idx]
-    valid<-!grepl(";",d$Protein.Group,fixed=TRUE) & !is.na(loci) &
+    valid<-!grepl(";",d$Protein.Group,fixed=TRUE) &
+      !is.na(d$N.Proteotypic.Sequences) & d$N.Proteotypic.Sequences>=1 & !is.na(loci) &
       grepl("^AT[1-5CM]G[0-9]+$",loci) & z$selection$observed_min2
     repeated<-duplicated(loci)|duplicated(loci,fromLast=TRUE)
     valid<-valid & !repeated

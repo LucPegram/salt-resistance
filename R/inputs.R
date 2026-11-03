@@ -62,13 +62,13 @@ read_proteomics <- function(path, spec) {
   samples <- unlist(lapply(c("No-0", "NIT2"), function(g) {
     unlist(lapply(c(0L, 75L), function(s) paste(g, paste0(s, "mM"), 1:3, sep = "_")))
   }))
-  assert_columns(d, c("Protein.Group", "N.Sequences", samples), path)
+  assert_columns(d, c("Protein.Group", "N.Sequences", "N.Proteotypic.Sequences", samples), path)
   quantitative <- grep("^(No-0|NIT2)_[0-9]+mM_[0-9]+$", names(d), value = TRUE)
   if (!setequal(samples, quantitative)) stop("Unexpected proteomics sample design: ", path)
   if (anyNA(d$Protein.Group) || any(!nzchar(d$Protein.Group)) || anyDuplicated(d$Protein.Group)) {
     stop("Protein-group identifiers must be nonempty and unique: ", path)
   }
-  for (s in c("N.Sequences", samples)) d[[s]] <- as_numeric_checked(d[[s]], paste(path, s))
+  for (s in c("N.Sequences", "N.Proteotypic.Sequences", samples)) d[[s]] <- as_numeric_checked(d[[s]], paste(path, s))
   values <- as.matrix(d[samples])
   if (any(values <= 0, na.rm = TRUE)) stop("Nonpositive measured protein abundance: ", path)
   meta <- data.frame(sample = samples,

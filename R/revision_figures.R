@@ -20,7 +20,8 @@ build_revision_qc_figure <- function(inputs,settings,destination) {
     plot(d$PC1,d$PC2,col=color,pch=shape,cex=1.1,
       xlab=sprintf("PC1 (%.1f%%)",100*d$PC1_fraction[1]),
       ylab=sprintf("PC2 (%.1f%%)",100*d$PC2_fraction[1]),
-      main=paste(x$spec$tissue,if(x$spec$assay=="proteomics")"proteome" else "microarray"))
+      main=paste(LETTERS[match(id,names(inputs))],x$spec$tissue,
+        if(x$spec$assay=="proteomics")"proteome" else "microarray"))
     text(d$PC1,d$PC2,labels=sub(".*[ _]","",x$samples),pos=3,cex=.65)
     if(x$spec$assay=="proteomics" || identical(x$spec$tissue,"Combined"))
       legend("topright",c("No-0 control","No-0 salt","NIT2 control","NIT2 salt"),
@@ -47,7 +48,7 @@ build_revision_dose_figure <- function(inputs,settings,destination) {
   for(g in names(loci)){
     id<-revision_candidate_transcript(out$y,loci[g]);v<-out$y[id,];m<-out$metadata
     plot(NA,xlim=c(-5,105),ylim=range(v),xlab="NaCl (mM)",
-      ylab="Log2 supplied normalized signal",main=paste(g,id),cex.main=.85)
+      ylab="Log2 supplied normalized signal",main=paste(LETTERS[match(g,names(loci))],g,id),cex.main=.85)
     for(t in c("Root","Shoot")){
       k<-m$tissue==t;col<-if(t=="Root")"#4477AA" else "#CC6677"
       offset<-if(t=="Root")-1.5 else 1.5
@@ -68,7 +69,8 @@ build_revision_protein_figure <- function(inputs,settings,destination) {
       y<-z$y[k,];m<-z$metadata
       plot(NA,xlim=c(.5,4.5),ylim=range(y,na.rm=TRUE),xaxt="n",
         xlab="",ylab="Log2 supplied abundance",
-        main=paste(if(g=="NHX7")"SOS1" else if(g=="AHA2")"AHA2-labelled group" else g,x$spec$tissue),cex.main=.85)
+        main=paste(LETTERS[match(g,c("NIT2","NHX7","AHA2"))+if(x$spec$tissue=="Shoot")3 else 0],
+          if(g=="NHX7")"SOS1" else if(g=="AHA2")"AHA2-labelled group" else g,x$spec$tissue),cex.main=.85)
       axis(1,at=1:4,labels=c("WT 0","WT 75","NIT2 0","NIT2 75"),cex.axis=.72)
       colors<-c("#4477AA","#4477AA","#CC6677","#CC6677")
       for(j in 1:4){v<-y[m$cell==levels(m$cell)[j]]
@@ -91,7 +93,8 @@ build_revision_contrast_figure <- function(inputs,settings,destination) {
     yy<-rev(seq_len(nrow(z)))
     plot(z$log2FC,yy,xlim=range(c(0,z$lower95,z$upper95)),ylim=c(.5,nrow(z)+.5),
       yaxt="n",ylab="",xlab="Log2 contrast with pointwise 95% interval",
-      main=gsub("_"," ",co),cex.main=.9,pch=16,col=ifelse(z$tissue=="Root","#4477AA","#CC6677"))
+      main=paste(LETTERS[match(co,c("baseline_genotype","salt_WT","saline_genotype","interaction"))],
+        gsub("_"," ",co)),cex.main=.9,pch=16,col=ifelse(z$tissue=="Root","#4477AA","#CC6677"))
     axis(2,at=yy,labels=labels,las=1,cex.axis=.75);abline(v=0,lty=2,col="gray60")
     segments(z$lower95,yy,z$upper95,yy,col=ifelse(z$tissue=="Root","#4477AA","#CC6677"))
     text(z$log2FC,yy+.23,labels=paste0("q=",formatC(z$q,digits=2,format="g")),cex=.6)
@@ -113,7 +116,8 @@ build_revision_prestress_figure <- function(inputs,settings,destination) {
     b<-rowMeans(y[,m$cell=="OE0",drop=FALSE])-rowMeans(y[,m$cell=="WT0",drop=FALSE])
     s<-rowMeans(y[,m$cell=="WTS",drop=FALSE])-rowMeans(y[,m$cell=="WT0",drop=FALSE])
     plot(s,b,pch=16,cex=.24,col=adjustcolor("#4477AA",alpha.f=.25),
-      xlab="WT salt response (log2)",ylab="Baseline genotype difference (log2)",main=n,cex.main=.85)
+      xlab="WT salt response (log2)",ylab="Baseline genotype difference (log2)",
+      main=paste(LETTERS[match(n,names(sets))],n),cex.main=.85)
     abline(h=0,v=0,col="gray65",lty=2)
     z<-prestress_splits(y,m,n);v<-z$Pearson[z$comparison=="disjoint_controls"]
     legend("topleft",c(sprintf("Shared control r = %.2f",cor(b,s)),
