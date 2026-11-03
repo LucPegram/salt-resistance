@@ -55,7 +55,7 @@ publication_key <- function(tissue=TRUE,footnote="") {
   if(nzchar(footnote)){
     lines<-strsplit(footnote,"\n",fixed=TRUE)[[1]]
     for(i in seq_along(lines))mtext(lines[i],side=1,outer=TRUE,
-      line=-.4-.8*(length(lines)-i),cex=.7,col=publication_colors["muted"])
+      line=.2-.8*(length(lines)-i),cex=.7,col=publication_colors["muted"])
   }
 }
 
