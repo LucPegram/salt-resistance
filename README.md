@@ -141,3 +141,5 @@ The paired-array influence analysis requested during review is reproduced by
 `scripts/reproduce_bmc_robustness.R`. It retains all primary samples and reports
 every harvested-pair omission under frozen and refitted normalization. See
 `docs/bmc_revision.md`.
+
+The [current manuscript display crosswalk](docs/current_manuscript_outputs.md) maps every BMC-revision table and figure to its R output and records the distinct primary and sensitivity units.

@@ -1,4 +1,4 @@
-# Format manuscript Tables S18-S20 from the complete registered extension CSVs.
+# Format external-baseline, TF and marker display summaries from complete extension CSVs.
 # No models, thresholds, or original expression measurements are changed.
 script<-sub('^--file=','',grep('^--file=',commandArgs(FALSE),value=TRUE))
 source(file.path(dirname(script),'bootstrap.R'))
