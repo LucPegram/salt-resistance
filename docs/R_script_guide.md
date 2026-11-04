@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **97 scripts**: **50 current workflow,
+script in this repository. It covers **101 scripts**: **54 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026 and the eight computational-extension files added on 4 November 2026. Original module descriptions were checked against
@@ -1408,3 +1408,31 @@ reproduces six tables and one figure individually or together. See
 Uses synthetic paired pools to check complete-pair omission, independently
 calculated cell-mean contrasts, interval construction and technical spot collapse.
 The local `mu()` helper computes means separately from the model implementation.
+
+
+### [`R/bmc_probe_mapping.R`](../R/bmc_probe_mapping.R)
+
+`bmc_probe_evidence()` reconstructs complete consistent query sequences from the
+original alignment workbook and audits valid/invalid rows and reported near
+matches. `bmc_exact_cds_map()` maps full sequences on both strands to all pinned
+CDS, rejecting cross-sequence boundary matches. `bmc_probe_audit()` joins
+physical features, corrected IDs, reconstructed queries and exact/near targets.
+`bmc_probe_sensitivity()` refits RNA contrasts and the complete eligible external
+signature family using the declared strict probe subset. Local `num()` parses
+the source number convention. No sequence gap is filled with guessed bases.
+
+### [`scripts/fetch_probe_reference.R`](../scripts/fetch_probe_reference.R)
+
+Downloads or verifies the exact Ensembl Plants release 63 TAIR10 CDS FASTA
+against its pinned SHA-256 and writes an external reference manifest.
+
+### [`scripts/reproduce_probe_mapping.R`](../scripts/reproduce_probe_mapping.R)
+
+Validates external roots with `inside()`, records all input/code/output hashes
+with `hash()`, runs reconstruction, independent mapping and strict sensitivity,
+and exports thirteen tables plus the external recovered-probe FASTA.
+
+### [`tests/probe_mapping_tests.R`](../tests/probe_mapping_tests.R)
+
+Checks independently constructed exact, reverse-strand and duplicate-gene
+examples and rejects an apparent match crossing concatenated CDS boundaries.

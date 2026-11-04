@@ -1,10 +1,10 @@
 Package: saltResistanceAnalysis
 Type: Project
 Title: Reproducible Analysis Workflows
-Version: 0.2.0
+Version: 0.3.0
 Description: Code-only workflows for validating external experimental inputs
     and reproducing individually registered tables and figures.
 Depends: R (>= 4.5.2)
-Imports: readxl, digest, jsonlite, limma, statmod, proDA, GO.db, AnnotationDbi
+Imports: readxl, digest, jsonlite, limma, statmod, proDA, GO.db, AnnotationDbi, Biostrings
 Encoding: UTF-8
 

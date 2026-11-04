@@ -35,3 +35,40 @@ recorded; unchanged derived results can be retrieved from a verified cache.
 
 The computational check does not reconstruct scanner images, establish probe
 specificity, or resolve the experimental unit of salt application.
+
+## Probe reconstruction and mapping sensitivity
+
+The supplied alignment workbook contains full query sequence evidence. Complete,
+consistent A/C/G/T query sequences are recovered only when alignment coordinates
+span the entire stated query length. Gaps introduced by alignment are removed;
+reverse query orientation is handled explicitly. Partial or conflicting queries
+are not filled or silently promoted to complete sequences.
+
+`fetch_probe_reference.R` pins the Ensembl Plants release 63 TAIR10 CDS FASTA by
+URL and SHA-256. `reproduce_probe_mapping.R` independently searches every
+recovered complete query, on both strands, against every reference CDS using
+Biostrings. Matches crossing concatenated CDS boundaries are rejected. Isoforms
+are collapsed to gene loci only for the locus-uniqueness diagnostic.
+
+The strict sensitivity uses probes with one exact CDS locus matching the supplied
+corrected mapping and no alternative locus among supplied alignments with at
+least 95% identity and 95% query coverage. These are stated annotation criteria,
+not a physical cross-hybridization model. Exact-match uniqueness does not prove
+hybridization specificity or isoform resolution, and CDS-only searching does not
+exclude off-target binding elsewhere in the transcriptome/genome. All failures,
+missing sequences, alternative loci and original corrected identifiers remain in
+the complete feature audit. The recovered FASTA is an external output, never
+committed as project data.
+
+After fitting normalization on the same complete ordinary-spot universe, the
+sensitivity restricts downstream RNA models to these probes. It refits all dose
+and genotype contrasts and the complete eligible independent salt-signature
+family. Different eligible loci and score universes remain explicit; the
+sensitivity does not replace the declared primary results or compare discovery
+counts as if they were biological effect sizes.
+
+Set `SALT_DATA_ROOT`, `SALT_RAW_ROOT`, `SALT_REFERENCE_ROOT` (the existing eight
+extension resources), `SALT_PROBE_REFERENCE_ROOT` and `SALT_OUTPUT_ROOT` to
+separate external roots. Run `Rscript --vanilla scripts/fetch_probe_reference.R`,
+then `Rscript --vanilla scripts/reproduce_probe_mapping.R`. Thirteen CSV outputs,
+the complete recovered probe FASTA and per-output provenance are generated.
