@@ -98,12 +98,12 @@ with complete input/code/output hashes and package versions.
 
 Set `SALT_PRIMARY_RESULTS` (quantile reanalysis), `SALT_PROBE_RESULTS`,
 `SALT_PAIR_RESULTS`, `SALT_TF_RESULTS`, `SALT_EXTENSION_ROOT` and
-`SALT_OUTPUT_ROOT` to the separate completed result locations. Run
+`SALT_OUTPUT_ROOT` to the separate completed result locations. Set `SALT_REFERENCE_ROOT` to the completed pinned public-reference directory containing AtRegNet.zip. Run
 `Rscript --vanilla scripts/reproduce_bmc_manuscript_tables.R all` or one ID
-from `--list`. Five display CSVs preserve the complete source-family corrections.
+from `--list`. Seven display CSVs preserve the complete source-family corrections or report descriptive target memberships/overlap without new significance tests.
 The probe table counts queries separately from physical spots and reports distinct query identifiers and reconstructed sequences for every focal locus; distinct identifiers can share the same sequence. The completed reconstructed_complete_probes.fasta in SALT_PROBE_RESULTS is required. The pair table shows every prespecified contrast involving the influential root dose and the
 shoot 75-versus-control comparison under both strategies; full omission results
-remain in their original complete CSVs. The TF table and figure_TF_correlation_sensitivity include all three settings for the union of global-BH findings across the three complete testing families. The figure compares original global BH values and estimated residual target correlations; the table also retains global BY, target counts and directions. No correction is recalculated on selected findings. These selections are not new discovery families.
+remain in their original complete CSVs. The TF table and figure_TF_correlation_sensitivity include all three settings for the union of global-BH findings across the three complete testing families. The figure compares original global BH values and estimated residual target correlations; the table also retains global BY, target counts and directions. No correction is recalculated on selected findings. `table_TF_overlap` exports every pairwise intersection, union, Jaccard index and fraction of the smaller measured set for the eight displayed TFs. `table_TF_target_members` exports every measured membership. Counts must match the original CAMERA coverage. Panel C of the comparison figure displays all 28 overlaps in the original 27,089-locus universe. These descriptive overlaps do not establish independent regulators or new discovery families.
 
 
 ## Signature-score variance sensitivity

@@ -2,7 +2,7 @@
 # significance cutoff or source adjustment is recomputed on the display subset.
 script<-sub('^--file=','',grep('^--file=',commandArgs(FALSE),value=TRUE))
 source(file.path(dirname(script),'bootstrap.R'))
-ids<-c('table_probe_audit','table_pair_influence','table_supporting_candidates','table_strict_probe_baseline','table_TF_correlations','figure_TF_correlation_sensitivity')
+ids<-c('table_probe_audit','table_pair_influence','table_supporting_candidates','table_strict_probe_baseline','table_TF_correlations','table_TF_overlap','table_TF_target_members','figure_TF_correlation_sensitivity')
 args<-commandArgs(TRUE)
 if(length(args)!=1L||!args%in%c('all','--list',ids))stop('Provide one table ID, all or --list')
 if(args=='--list'){cat(ids,sep='\n');quit(status=0)}
@@ -26,10 +26,15 @@ sources<-c(
 if(any(!file.exists(sources))||any(!file.exists(file.path(dirname(sources),'RUN_COMPLETE'))))stop('Incomplete source outputs')
 sources<-c(sources,sequences=file.path(roots['probe'],'reconstructed_complete_probes.fasta'))
 if(!file.exists(sources['sequences'])||!file.exists(file.path(roots['probe'],'RUN_COMPLETE')))stop('Incomplete reconstructed probe sequences')
+public_root<-normalizePath(Sys.getenv('SALT_REFERENCE_ROOT'),mustWork=TRUE)
+if(inside(out,public_root)||inside(public_root,out))stop('Separate public references and outputs')
+sources<-c(sources,DAP=file.path(public_root,'AtRegNet.zip'),
+ universe=file.path(roots['extension'],'dose_joint_tests/dose_joint_tests.csv'))
+if(any(!file.exists(sources)))stop('Missing DAP reference or measured-universe table')
 hash<-function(p)digest::digest(file=p,algo='sha256')
 before<-vapply(sources,hash,'');code<-source_files(project_root)
 code_before<-setNames(vapply(code,hash,''),substring(code,nchar(project_root)+2L))
-d<-lapply(sources[names(sources)!='sequences'],read.csv,stringsAsFactors=FALSE,check.names=FALSE)
+d<-lapply(sources[!names(sources)%in%c('sequences','DAP')],read.csv,stringsAsFactors=FALSE,check.names=FALSE)
 seqs<-as.character(Biostrings::readDNAStringSet(sources['sequences']))
 a<-d$audit
 probe<-rbind(data.frame(item='Complete consistent queries',count=d$reconstruction$value[d$reconstruction$quantity=='queries_with_complete_consistent_sequence'],unit='query identifiers'),
@@ -62,14 +67,21 @@ support<-rbind(data.frame(Gene=d$dual$Gene_name,locus=d$dual$locus,tissue=d$dual
  worst_assay_q=d$three$worst_assay_q,joint_global_BH=d$three$Array2_joint_q_global))
 b<-d$baseline[d$baseline$contrast=='baseline_genotype',];b<-b[order(b$dataset,b$reference_tissue,as.numeric(sub('.*hour','',b$reference))),]
 tf<-bmc_tf_comparison(d$fixed,d$tf)
+stopifnot(all(tf$dataset=='Array1'),all(tf$contrast=='Shoot_100v0'))
+dap<-extension_read_dap(sources['DAP']);universe<-unique(d$universe$locus)
+selected<-unique(tf$TF);sets<-lapply(selected,function(id)intersect(dap$edges$target[dap$edges$TF==id],universe));names(sets)<-selected
+expected<-tf$targets[match(selected,tf$TF)];stopifnot(identical(unname(lengths(sets)),as.integer(expected)))
+overlap<-bmc_target_overlap(sets)
+overlap$TF1_name<-tf$TF_name[match(overlap$TF1,tf$TF)];overlap$TF2_name<-tf$TF_name[match(overlap$TF2,tf$TF)]
+members<-do.call(rbind,lapply(selected,function(id)data.frame(TF=id,TF_name=tf$TF_name[match(id,tf$TF)],locus=sets[[id]],dataset='Array1')))
 values<-list(table_probe_audit=probe,table_pair_influence=qc,table_supporting_candidates=support,
- table_strict_probe_baseline=b,table_TF_correlations=tf)
+ table_strict_probe_baseline=b,table_TF_correlations=tf,table_TF_overlap=overlap,table_TF_target_members=members)
 revision<-system2('git',c('-C',shQuote(project_root),'rev-parse','HEAD'),stdout=TRUE)
 for(id in if(args=='all')ids else args){
  folder<-file.path(out,id);dir.create(folder,showWarnings=FALSE)
  marker<-file.path(folder,'RUN_COMPLETE');if(file.exists(marker))unlink(marker)
  if(id=='figure_TF_correlation_sensitivity'){
-  path<-file.path(folder,paste0(id,'.pdf'));bmc_tf_comparison_figure(tf,path)
+  path<-file.path(folder,paste0(id,'.pdf'));bmc_tf_comparison_figure(tf,path,overlap)
   outputs<-list.files(folder,pattern='\\.(pdf|svg|png|tiff)$|_caption.txt$',full.names=TRUE)
  }else{
   path<-file.path(folder,paste0(id,'.csv'));write_table(values[[id]],path);outputs<-path

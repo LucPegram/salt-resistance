@@ -80,23 +80,35 @@ bmc_tf_comparison <- function(fixed,estimated) {
  d[order(match(key(d),keys),match(d$mode,c('Fixed 0.01','Estimated residual','Fixed 0.05'))),]
 }
 
-bmc_tf_comparison_figure <- function(d,path) {
+bmc_target_overlap <- function(sets) {
+ stopifnot(length(sets)>=2L,!is.null(names(sets)),!anyDuplicated(names(sets)))
+ sets<-lapply(sets,unique)
+ pairs<-combn(names(sets),2,simplify=FALSE)
+ do.call(rbind,lapply(pairs,function(p){
+  a<-sets[[p[1]]];b<-sets[[p[2]]];shared<-length(intersect(a,b));total<-length(union(a,b))
+  data.frame(TF1=p[1],TF2=p[2],targets1=length(a),targets2=length(b),shared=shared,
+   union=total,Jaccard=if(total)shared/total else NA_real_,
+   fraction_of_smaller_set=if(min(length(a),length(b)))shared/min(length(a),length(b)) else NA_real_)
+ }))
+}
+
+bmc_tf_comparison_figure <- function(d,path,overlap=NULL) {
  stopifnot(nrow(d)>0,all(is.finite(d$BH)),all(d$BH>=0&d$BH<=1))
  key<-paste(d$dataset,d$contrast,d$TF,sep='::')
  keys<-unique(key);n<-length(keys)
  labels<-vapply(keys,function(k){
-  x<-d[match(k,key),];name<-if(x$TF_name==x$TF)x$TF else paste(x$TF_name,x$TF,sep=' / ')
+  x<-d[match(k,key),];name<-x$TF_name
   if(length(unique(paste(d$dataset,d$contrast)))>1)paste(name,x$dataset,x$contrast,sep=' | ') else name
  },'')
  modes<-c('Fixed 0.01','Estimated residual','Fixed 0.05')
  colors<-c('#0072B2','#8B4D9C','#D55E00');shapes<-c(16,17,15);offset<-c(.19,0,-.19)
- publication_figure(path,9.5,max(4.8,.45*n+1.7),function(){
-  layout(matrix(c(1,2),1,2),widths=c(2.25,1))
-  par(mar=c(4.4,14.8,4.1,1.2),cex=1)
+ publication_figure(path,9.5,if(is.null(overlap))max(4.8,.45*n+1.7) else 9,function(){
+  layout(if(is.null(overlap))matrix(c(1,2),1,2) else matrix(c(1,2,3,3),2,2,byrow=TRUE),widths=c(2.25,1))
+  par(mar=c(4.4,7.8,4.1,1.2),cex=1)
   score<- -log10(pmax(d$BH,1e-300));xmax<-max(2,max(score)*1.12)
   plot(NA,xlim=c(-.025*xmax,xmax),ylim=c(.45,n+1.05),axes=FALSE,xlab='-log10 global BH q',ylab='',xaxs='i')
   abline(h=seq_len(n),col='#E6EBEF',lwd=.7);abline(v=-log10(.05),col='#7B8794',lty=2)
-  axis(1);axis(2,at=n:1,labels=labels,las=1,tick=FALSE,cex.axis=.86)
+  axis(1);axis(2,at=n:1,labels=labels,las=1,tick=FALSE,cex.axis=1)
   for(j in seq_along(modes)){
    z<-d[d$mode==modes[j],];ii<-match(paste(z$dataset,z$contrast,z$TF,sep='::'),keys)
    points(-log10(pmax(z$BH,1e-300)),n-ii+1+offset[j],pch=shapes[j],col=colors[j],cex=.95)
@@ -110,6 +122,25 @@ bmc_tf_comparison_figure <- function(d,path) {
   abline(h=seq_len(n),col='#E6EBEF',lwd=.7);abline(v=c(.01,.05),col='#7B8794',lty=2)
   axis(1);points(z$correlation,n-ii+1,pch=17,col=colors[2],cex=1)
   title(main='B  Estimated correlation',adj=0,cex.main=1.1)
+  if(!is.null(overlap)){
+   stopifnot(length(unique(d$dataset))==1L,length(unique(d$contrast))==1L,!anyDuplicated(d$TF[d$mode=='Estimated residual']))
+   tfs<-d$TF[match(keys,key)];m<-diag(n);dimnames(m)<-list(tfs,tfs)
+   for(i in seq_len(nrow(overlap))){
+    a<-match(overlap$TF1[i],tfs);b<-match(overlap$TF2[i],tfs)
+    stopifnot(!is.na(a),!is.na(b));m[a,b]<-m[b,a]<-overlap$Jaccard[i]
+   }
+   par(mar=c(5.8,7.8,3.1,1.2),cex=1)
+   plot(NA,xlim=c(.5,n+.5),ylim=c(.5,n+.5),axes=FALSE,xlab='',ylab='',xaxs='i',yaxs='i')
+   palette<-colorRampPalette(c('#F8FAFC','#0072B2'))(101)
+   for(i in seq_len(n))for(j in seq_len(n)){
+    v<-m[i,j];rect(j-.5,n-i+.5,j+.5,n-i+1.5,col=palette[round(100*v)+1L],border='white')
+    text(j,n-i+1,formatC(v,format='f',digits=2),cex=.95,col=if(v>.55)'white' else '#253342')
+   }
+   axis(2,at=n:1,labels=labels,las=1,tick=FALSE,cex.axis=1)
+   axis(1,at=seq_len(n),labels=labels,las=2,tick=FALSE,cex.axis=.9)
+   title(main='C  Shared target sets',adj=0,cex.main=1.1)
+   publication_caption('Panel C reports pairwise Jaccard overlap (shared measured targets divided by their union) within the same Array 1 universe; the diagonal is one. Numbers and colour encode overlap, not enrichment significance. All 28 distinct pairs and the measured target memberships are exported. Overlapping findings are not independent regulatory programs; TF names and AGI identifiers are matched in the companion table.')
+  }
   publication_caption('Every TF-by-assay-by-contrast finding with global BH q < 0.05 under any of the three correlation settings is displayed under all three settings. Selection follows the complete families; no correction is recalculated on these rows.')
   publication_caption('Panel A retains each setting\'s original full-family global BH q values. The dashed vertical line is q = 0.05. Symbols are vertically offset to distinguish coincident values. Global BY values and target counts are in the companion table.')
   publication_caption('Panel B shows the nonnegative estimated average residual target correlation after whitening the fitted harvested-pair covariance; dashed lines mark the two fixed assumptions, 0.01 and 0.05. The settings are sensitivities on the same data, not independent confirmations; no setting establishes TF activity.')

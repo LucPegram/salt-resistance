@@ -40,3 +40,8 @@ stopifnot(nrow(comparison)==6L,setequal(comparison$TF,c('A','B')),
  comparison$BH[comparison$TF=='A'&comparison$mode=='Estimated residual']==.4,
  comparison$BH[comparison$TF=='B'&comparison$mode=='Fixed 0.01']==.8)
 cat('All-setting display retains the union of full-family findings and unchanged q values\n')
+overlap<-bmc_target_overlap(list(A=c('g1','g2','g3','g3'),B=c('g2','g3','g4'),C='g5'))
+stopifnot(nrow(overlap)==3L,overlap$shared[1]==2L,overlap$union[1]==4L,
+ overlap$Jaccard[1]==.5,abs(overlap$fraction_of_smaller_set[1]-2/3)<1e-12,
+ all(overlap$shared[-1]==0L),all(overlap$Jaccard[-1]==0))
+cat('Target overlap counts and Jaccard values agree with explicit set arithmetic\n')
