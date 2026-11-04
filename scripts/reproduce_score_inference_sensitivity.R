@@ -20,8 +20,10 @@ d<-lapply(paths,read.csv,check.names=FALSE,stringsAsFactors=FALSE)
 a<-bmc_unmoderated_scores(d$external_signature_scores,d$external_signature_tests,d$project_samples,'reference')
 b<-bmc_unmoderated_scores(d$marker_scores,d$marker_tests,d$project_samples,'set')
 stopifnot(nrow(a)==141L,all(table(b$mode)==781L))
+basal<-a[a$contrast=='baseline_genotype',]
+basal<-basal[order(basal$dataset,sub('^AtGen_([^_]+)_.*','\\1',basal$feature),as.numeric(sub('.*hour','',basal$feature))),]
 values<-list(external_score_inference_sensitivity=a,marker_score_inference_sensitivity=b,
- table_basal_score_inference=a[a$contrast=='baseline_genotype',])
+ table_basal_score_inference=basal)
 revision<-system2('git',c('-C',shQuote(project_root),'rev-parse','HEAD'),stdout=TRUE)
 for(id in if(args=='all')registry else args){
  folder<-file.path(out,id);dir.create(folder,showWarnings=FALSE)

@@ -49,7 +49,7 @@ support<-rbind(data.frame(Gene=d$dual$Gene_name,locus=d$dual$locus,tissue=d$dual
  data.frame(Gene=d$three$Gene_name,locus=d$three$locus,tissue=d$three$tissue,screen='Three-dataset salt context',
  RNA_salt_log2FC=d$three$Array2_log2FC,protein_salt_log2FC=d$three$protein_log2FC,
  worst_assay_q=d$three$worst_assay_q,joint_global_BH=d$three$Array2_joint_q_global))
-b<-d$baseline[d$baseline$contrast=='baseline_genotype',];b<-b[order(b$dataset,b$reference),]
+b<-d$baseline[d$baseline$contrast=='baseline_genotype',];b<-b[order(b$dataset,b$reference_tissue,as.numeric(sub('.*hour','',b$reference))),]
 t<-d$tf;fixed<-d$fixed
 shown<-t[t$q_global<.05|(t$TF=='AT2G03340'&t$dataset=='Array1'&t$contrast=='Shoot_100v0'),]
 shown<-shown[order(shown$q_global,shown$TF),]
