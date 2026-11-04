@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **93 scripts**: **46 current workflow,
+script in this repository. It covers **94 scripts**: **47 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026 and the eight computational-extension files added on 4 November 2026. Original module descriptions were checked against
@@ -1367,3 +1367,18 @@ Provenance records inputs, code, outputs and the Git revision.
 ## Computational extensions added 4 November 2026
 
 The eight additional R files and the functions of each are described in the [extension script/function guide](computational_extensions.md#scriptfunction-responsibilities). The new entry point is `scripts/reproduce_extensions.R`, with 30 individually reproducible output IDs. Public reference downloads are separate from the experimental input root. These additions do not replace or relabel historical analyses.
+
+
+### [`scripts/reproduce_extension_manuscript.R`](../scripts/reproduce_extension_manuscript.R)
+
+Formats Supplementary Tables S18-S20 from the complete registered external
+signature, TF-target and marker CSVs. It retains all eligible basal salt-signature
+tests, and all primary global-BH findings in the stated TF and basal marker
+families, with their matched sensitivities. It never refits a model or adjusts
+a selected subset again. `SALT_EXTENSION_ROOT` selects the external source
+folder; `SALT_OUTPUT_ROOT` selects a separate output folder. Call with `all`,
+`--list`, or one table ID. Local `inside()`, `hash()` and `key()` helpers check
+folder separation, record SHA-256 and match complete dataset/contrast/TF-or-marker
+identities. Outputs are three CSVs with original statistics, provenance and
+completion records. Supplementary Table S17 directly uses the existing
+`dose_discoveries` CSV.

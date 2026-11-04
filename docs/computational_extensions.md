@@ -101,3 +101,19 @@ Additional primary-method reference: [limma User's Guide](https://bioconductor.o
 - `extension_columns`, `extension_column_label`, `extension_matrix` and `extension_heatmap` construct unambiguous display cells and common legends; the five `*_figure` functions render dose, candidate, external, TF and marker figures (the external function also renders the concordance figure).
 - `extension_compute` coordinates model/resource loading; `extension_universe_table`, `extension_dose_summary`, `extension_sample_table` and `extension_tables` assemble the auditable tables; `extension_report_pages` and `extension_report` generate the results report from calculated values; `extension_registry` lists all individually reproducible outputs.
 - `extension_settings` and `extension_resources` return the analysis settings and eight resource URLs. The two entry-point scripts contain top-level download/run/provenance commands; the test file contains synthetic assertions rather than scientific measurements.
+
+## Tables used in the integrated manuscript
+
+Supplementary Table S17 displays `dose_discoveries`, without a new model or a
+change of testing family. Tables S18-S20 are formatted by
+`scripts/reproduce_extension_manuscript.R` from the complete registered extension
+CSVs. Set `SALT_EXTENSION_ROOT` to the extension output root and
+`SALT_OUTPUT_ROOT` to a separate external folder. Run the script with `all` or
+one of `table_external_baseline`, `table_TF_sensitivity`, and
+`table_marker_baseline`. The first retains every eligible baseline signature
+test, including nonsignificant results. The latter two display all primary
+BH findings in their stated families together with the matched sensitivity;
+they retain the original global adjustment values and do not adjust P again.
+Per-output provenance hashes the complete source tables and the code.
+Supplementary Figures S3-S8 correspond to the six existing extension figures,
+with explanatory text taken from their caption companions.

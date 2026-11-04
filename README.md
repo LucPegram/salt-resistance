@@ -131,3 +131,8 @@ Paired root-shoot dose patterns, independent public salt benchmarks, DAP-seq TF 
 
 
 Figure text policy (4 November 2026): explanatory subtitles and notes are written to a companion `<figure_stem>_caption.txt` file, rather than drawn inside publication figures. Panel identifiers, gene/tissue headings, axes, treatment keys and quantitative color scales remain in the artwork. Include the companion text in the manuscript/report caption. Both reproduction runners record its SHA-256 together with the figure formats. The numerical models, selection rules and plotted measurements are unchanged.
+
+For the integrated manuscript, `scripts/reproduce_extension_manuscript.R`
+formats Supplementary Tables S18-S20 individually from the complete extension
+CSVs. See `docs/computational_extensions.md` for the source/output roots and
+selection rules. S17 uses `dose_discoveries` directly.
