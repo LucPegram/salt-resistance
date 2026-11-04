@@ -101,12 +101,9 @@ Set `SALT_PRIMARY_RESULTS` (quantile reanalysis), `SALT_PROBE_RESULTS`,
 `SALT_OUTPUT_ROOT` to the separate completed result locations. Run
 `Rscript --vanilla scripts/reproduce_bmc_manuscript_tables.R all` or one ID
 from `--list`. Five display CSVs preserve the complete source-family corrections.
-The probe table counts queries separately from physical spots; the pair table
-shows every prespecified contrast involving the influential root dose and the
+The probe table counts queries separately from physical spots and reports distinct query identifiers and reconstructed sequences for every focal locus; distinct identifiers can share the same sequence. The completed reconstructed_complete_probes.fasta in SALT_PROBE_RESULTS is required. The pair table shows every prespecified contrast involving the influential root dose and the
 shoot 75-versus-control comparison under both strategies; full omission results
-remain in their original complete CSVs. The TF display includes every estimated-
-correlation BH hit and WRKY3 at all three settings, rather than only the most
-favourable setting. These selections are not new discovery families.
+remain in their original complete CSVs. The TF table and figure_TF_correlation_sensitivity include all three settings for the union of global-BH findings across the three complete testing families. The figure compares original global BH values and estimated residual target correlations; the table also retains global BY, target counts and directions. No correction is recalculated on selected findings. These selections are not new discovery families.
 
 
 ## Signature-score variance sensitivity

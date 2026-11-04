@@ -1465,8 +1465,9 @@ paired designs, and verifies that the covariance whitening produces identity.
 Formats five reviewer-response display tables from complete registered results:
 probe reconstruction and focal mapping, flagged-pair influence under both
 normalization strategies, both exploratory candidate screens, every eligible
-strict-probe basal external-signature test, and all estimated-correlation TF BH
-findings plus WRKY3 under all three correlation settings. `inside()` separates
+strict-probe basal external-signature test, and every all-setting TF comparison
+for the union of global-BH findings under any setting. It also writes the
+comparison figure with a separate caption. `inside()` separates
 roots and `hash()` records inputs/code/outputs. No model, source P value or
 source-family correction is recomputed after display selection. Run one ID,
 `all` or `--list`; the root variables are documented in `docs/bmc_revision.md`.
@@ -1491,3 +1492,5 @@ external and 781-per-mode marker tests plus every basal external display row and
 
 Verifies score contrasts, standard errors, residual degrees of freedom and
 ordinary t P values against an independent synthetic `lm` calculation.
+
+The TF comparison helpers in `R/bmc_tf_correlation.R` also support the current display revision. `bmc_tf_comparison()` selects the union of globally adjusted BH findings across fixed 0.01, fixed 0.05 and estimated residual-correlation families and copies every original BH/BY value and direction for all three settings. `bmc_tf_comparison_figure()` plots those BH values alongside estimated correlations, writing separate explanatory captions. `scripts/reproduce_bmc_manuscript_tables.R` exposes this as `figure_TF_correlation_sensitivity`; its probe audit now distinguishes physical spots, query identifiers and unique reconstructed sequences. The existing TF test entry point checks selection against deliberately discordant settings without recomputing q values.

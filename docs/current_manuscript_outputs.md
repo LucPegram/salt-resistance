@@ -60,7 +60,7 @@ Captions are separate from figure artwork. Each output has a provenance record.
 | S5 | `figure_integration_pathways` / pathway_evidence.pdf |
 | S6 | `reproduce_extensions.R figure_external_signatures` |
 | S7 | `reproduce_extensions.R figure_external_concordance` |
-| S8 | `reproduce_extensions.R figure_TF_targets`, fixed-0.01 display; all settings in S20 |
+| S8 | `reproduce_bmc_manuscript_tables.R figure_TF_correlation_sensitivity`; all settings and global BY in S20 |
 | S9 | `reproduce_extensions.R figure_marker_signatures` |
 
 The full eligible testing families, excluded features and nonsignificant results

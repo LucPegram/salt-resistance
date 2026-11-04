@@ -2,7 +2,7 @@
 # significance cutoff or source adjustment is recomputed on the display subset.
 script<-sub('^--file=','',grep('^--file=',commandArgs(FALSE),value=TRUE))
 source(file.path(dirname(script),'bootstrap.R'))
-ids<-c('table_probe_audit','table_pair_influence','table_supporting_candidates','table_strict_probe_baseline','table_TF_correlations')
+ids<-c('table_probe_audit','table_pair_influence','table_supporting_candidates','table_strict_probe_baseline','table_TF_correlations','figure_TF_correlation_sensitivity')
 args<-commandArgs(TRUE)
 if(length(args)!=1L||!args%in%c('all','--list',ids))stop('Provide one table ID, all or --list')
 if(args=='--list'){cat(ids,sep='\n');quit(status=0)}
@@ -24,10 +24,13 @@ sources<-c(
  tf=file.path(roots['tf'],'TF_estimated_correlation_tests/TF_estimated_correlation_tests.csv'),
  fixed=file.path(roots['extension'],'TF_target_enrichment/TF_target_enrichment.csv'))
 if(any(!file.exists(sources))||any(!file.exists(file.path(dirname(sources),'RUN_COMPLETE'))))stop('Incomplete source outputs')
+sources<-c(sources,sequences=file.path(roots['probe'],'reconstructed_complete_probes.fasta'))
+if(!file.exists(sources['sequences'])||!file.exists(file.path(roots['probe'],'RUN_COMPLETE')))stop('Incomplete reconstructed probe sequences')
 hash<-function(p)digest::digest(file=p,algo='sha256')
 before<-vapply(sources,hash,'');code<-source_files(project_root)
 code_before<-setNames(vapply(code,hash,''),substring(code,nchar(project_root)+2L))
-d<-lapply(sources,read.csv,stringsAsFactors=FALSE,check.names=FALSE)
+d<-lapply(sources[names(sources)!='sequences'],read.csv,stringsAsFactors=FALSE,check.names=FALSE)
+seqs<-as.character(Biostrings::readDNAStringSet(sources['sequences']))
 a<-d$audit
 probe<-rbind(data.frame(item='Complete consistent queries',count=d$reconstruction$value[d$reconstruction$quantity=='queries_with_complete_consistent_sequence'],unit='query identifiers'),
  data.frame(item=names(table(a$status)),count=as.integer(table(a$status)),unit='ordinary physical features'),
@@ -35,6 +38,14 @@ probe<-rbind(data.frame(item='Complete consistent queries',count=d$reconstructio
 focal<-c(NIT2='AT3G44300',SOS1='AT2G01980',AHA2='AT4G30190',KUP4='AT4G23640',HKT1='AT4G10310',HAK5='AT4G13420',`CDKA;1`='AT3G48750',AT5G44720='AT5G44720',`LRK10L-1.2`='AT1G18390')
 probe<-rbind(probe,do.call(rbind,lapply(seq_along(focal),function(i)data.frame(item=paste(names(focal)[i],focal[i],sep=' / '),
  count=sum(a$supplied_locus==focal[i]&a$strict_probe_sensitivity_eligible),unit='strict eligible physical features'))))
+probe$distinct_query_ids<-probe$distinct_sequences<-NA_integer_
+for(i in seq_along(focal)){
+ queries<-unique(a$probe[a$supplied_locus==focal[i]&a$strict_probe_sensitivity_eligible])
+ stopifnot(all(queries%in%names(seqs)))
+ j<-match(paste(names(focal)[i],focal[i],sep=' / '),probe$item)
+ probe$distinct_query_ids[j]<-length(queries)
+ probe$distinct_sequences[j]<-length(unique(seqs[queries]))
+}
 co<-c('Root_75v0','Root_75v50','Root_100v75','Shoot_75v0','Difference_75v0','Difference_75v50','Difference_100v75')
 q<-d$metrics[d$metrics$omitted_pool=='75_2',]
 f<-q[q$normalization=='frozen',];r<-q[q$normalization=='refitted',]
@@ -50,25 +61,22 @@ support<-rbind(data.frame(Gene=d$dual$Gene_name,locus=d$dual$locus,tissue=d$dual
  RNA_salt_log2FC=d$three$Array2_log2FC,protein_salt_log2FC=d$three$protein_log2FC,
  worst_assay_q=d$three$worst_assay_q,joint_global_BH=d$three$Array2_joint_q_global))
 b<-d$baseline[d$baseline$contrast=='baseline_genotype',];b<-b[order(b$dataset,b$reference_tissue,as.numeric(sub('.*hour','',b$reference))),]
-t<-d$tf;fixed<-d$fixed
-shown<-t[t$q_global<.05|(t$TF=='AT2G03340'&t$dataset=='Array1'&t$contrast=='Shoot_100v0'),]
-shown<-shown[order(shown$q_global,shown$TF),]
-tf<-data.frame(TF=shown$TF,TF_name=shown$TF_name,dataset=shown$dataset,contrast=shown$contrast,
- mode='Estimated residual',targets=shown$NGenes,correlation=shown$used_correlation,BH=shown$q_global,BY=shown$q_BY)
-w<-fixed[fixed$TF=='AT2G03340'&fixed$dataset=='Array1'&fixed$contrast=='Shoot_100v0',]
-tf<-rbind(tf,data.frame(TF=w$TF,TF_name=w$TF_name,dataset=w$dataset,contrast=w$contrast,
- mode=ifelse(w$mode=='primary','Fixed 0.01','Fixed 0.05'),targets=w$NGenes,
- correlation=w$inter_gene_correlation,BH=w$q_global,BY=w$q_BY))
+tf<-bmc_tf_comparison(d$fixed,d$tf)
 values<-list(table_probe_audit=probe,table_pair_influence=qc,table_supporting_candidates=support,
  table_strict_probe_baseline=b,table_TF_correlations=tf)
 revision<-system2('git',c('-C',shQuote(project_root),'rev-parse','HEAD'),stdout=TRUE)
 for(id in if(args=='all')ids else args){
  folder<-file.path(out,id);dir.create(folder,showWarnings=FALSE)
  marker<-file.path(folder,'RUN_COMPLETE');if(file.exists(marker))unlink(marker)
- path<-file.path(folder,paste0(id,'.csv'));write_table(values[[id]],path)
+ if(id=='figure_TF_correlation_sensitivity'){
+  path<-file.path(folder,paste0(id,'.pdf'));bmc_tf_comparison_figure(tf,path)
+  outputs<-list.files(folder,pattern='\\.(pdf|svg|png|tiff)$|_caption.txt$',full.names=TRUE)
+ }else{
+  path<-file.path(folder,paste0(id,'.csv'));write_table(values[[id]],path);outputs<-path
+ }
  stopifnot(identical(before,vapply(sources,hash,'')),identical(unname(code_before),unname(vapply(code,hash,''))))
  dput(list(artifact_id=id,git_revision=revision,input_sha256=before,code_sha256=code_before,
-  output_sha256=setNames(hash(path),basename(path)),command=commandArgs(),session=capture.output(sessionInfo()),
+  output_sha256=setNames(vapply(outputs,hash,''),basename(outputs)),command=commandArgs(),session=capture.output(sessionInfo()),
   specification='Display selection only. Complete source-family adjustments preserved; no correction recalculated on selected rows.'),file=file.path(folder,'provenance.R'))
  writeLines('Complete; see provenance.R',marker);message('Completed ',id)
 }

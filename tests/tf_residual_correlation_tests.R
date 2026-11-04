@@ -24,3 +24,19 @@ stopifnot(all(is.finite(ans$TF_estimated_correlation_tests$used_correlation)),
  identical(ans$TF_estimated_correlation_tests$used_correlation,
   ans$TF_residual_correlation$used_residual_correlation))
 cat('Residual correlation agrees with limma; paired covariance whitening verified\n')
+
+# A finding selected under one setting must retain all other settings, even when
+# their q values are nonsignificant. Values are copied from full-family results.
+fixed<-data.frame(TF=rep(c('A','B','C'),2),TF_name=rep(c('Alpha','Beta','Gamma'),2),
+ dataset='test',contrast='salt',mode=rep(c('primary','sensitivity'),each=3),
+ NGenes=12,inter_gene_correlation=rep(c(.01,.05),each=3),
+ q_global=c(.01,.8,.9,1,1,1),q_BY=c(.04,1,1,1,1,1),Direction='Up')
+estimated<-data.frame(TF=c('C','A','B'),TF_name=c('Gamma','Alpha','Beta'),
+ dataset='test',contrast='salt',NGenes=12,used_correlation=c(.01,.03,.005),
+ q_global=c(.9,.4,.02),q_BY=c(1,1,.08),Direction='Up')
+comparison<-bmc_tf_comparison(fixed,estimated)
+stopifnot(nrow(comparison)==6L,setequal(comparison$TF,c('A','B')),
+ all(table(comparison$TF)==3L),
+ comparison$BH[comparison$TF=='A'&comparison$mode=='Estimated residual']==.4,
+ comparison$BH[comparison$TF=='B'&comparison$mode=='Fixed 0.01']==.8)
+cat('All-setting display retains the union of full-family findings and unchanged q values\n')
