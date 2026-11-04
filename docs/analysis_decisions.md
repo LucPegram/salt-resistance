@@ -86,3 +86,7 @@ qPCR replicates, reference genes, localization, acquisition parameters, phenotyp
 fluxes or blots. qPCR means remain descriptive. Canonical sequence mapping does not
 establish site localization, occupancy, differential phosphorylation or activity.
 Reproduction from processed matrices is not full raw-assay reproduction.
+
+## Computational extensions, 4 November 2026
+
+Added gene-level paired categorical dose contrasts, two independent public salt experiments (GSE5623 with its GSE5620 control arm; GSE223207), original-paper DAP-seq target enrichment via AGRIS, and independent atlas developmental/tissue signatures. Full methods, multiple-testing families, complete-observation protein eligibility, coverage audits, candidate-exclusion and correlation sensitivities are in [computational_extensions.md](computational_extensions.md). The 10x dataset is excluded following the user's explicit instruction. Main-release outputs and original measurements are not overwritten.

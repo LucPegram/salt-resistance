@@ -1362,3 +1362,7 @@ external roots and completed input artifacts are required. Local helpers are
 `inside()` for containment, `read()` for completed-file imports, `compare()` for
 matched-universe sensitivity summaries, and `key()` for candidate identity.
 Provenance records inputs, code, outputs and the Git revision.
+
+## Computational extensions added 4 November 2026
+
+The eight additional R files and the functions of each are described in the [extension script/function guide](computational_extensions.md#scriptfunction-responsibilities). The new entry point is `scripts/reproduce_extensions.R`, with 30 individually reproducible output IDs. Public reference downloads are separate from the experimental input root. These additions do not replace or relabel historical analyses.

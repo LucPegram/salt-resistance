@@ -124,3 +124,7 @@ The supporting-trend candidate screen is described in [docs/supporting_trends.md
 Run `Rscript --vanilla scripts/reproduce_supporting.R` for its eight independent
 report, table, audit and profile-figure artifacts. Synthetic selection and
 correlation checks: `Rscript --vanilla tests/supporting_tests.R`.
+
+## Additional computational analyses
+
+Paired root-shoot dose patterns, independent public salt benchmarks, DAP-seq TF target enrichment and developmental/tissue marker signatures have a separate reproducible extension workflow. See [methods, reference sources, all output IDs and commands](docs/computational_extensions.md). Use `Rscript --vanilla scripts/reproduce_extensions.R --list`; the original 78-artifact workflow remains unchanged. The suggested 10x dataset is excluded at the user's request.
