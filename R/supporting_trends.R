@@ -272,8 +272,8 @@ supporting_figure <- function(result,destination) {
           xlab='RNA condition mean (log2)',ylab='Protein condition mean (log2)')
         points(means[[1]],means[[2]],pch=c(21,24,21,24),bg=publication_colors[c('No-0','No-0','NIT2','NIT2')],col='white',cex=1.3)
         publication_pool_labels(means[[1]],means[[2]],c('WT0','WTS','OE0','OES'))
-        publication_title(LETTERS[2*n+i],paste0('Four means | r = ',sprintf('%.2f',a$profile_Pearson)),
-          paste0('Spearman = ',sprintf('%.2f',a$profile_Spearman),' | descriptive; n = 4 means'))
+        publication_title(LETTERS[2*n+i],'Condition means',
+          sprintf('%s: Pearson r = %.3f; Spearman rho = %.3f; descriptive comparison of four condition means',a$locus,a$profile_Pearson,a$profile_Spearman))
       }
     }
     publication_key(FALSE,'Circles: control; triangles: salt. Raw pool points and condition means; no imputation.\nWT: No-0; OE: NIT2; S: salt. Four means are not four paired biological replicates.')

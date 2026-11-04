@@ -14,7 +14,7 @@ test results retain HKT1. Historical summary figures remain separate outputs.
 - Shape and line style also distinguish groups, providing cues without colour.
 - Dose axes mark only the actual sampled concentrations. Small deterministic
   horizontal offsets separate observations; mean lines use the true dose values.
-- Dose-panel subtitles also show the selected transcript tissue-by-dose BH
+- Dose-panel captions give the selected transcript and tissue-by-dose BH
   value from correction across all 29,391 transcript IDs.
 - Figure 2 overlays all available pool measurements on boxplots of observed
   log2 abundance. Boxes show medians and Tukey hinges; whiskers reach the most
@@ -33,7 +33,7 @@ test results retain HKT1. Historical summary figures remain separate outputs.
   and shoots. All treatment/genotype combinations are fitted together within
   each panel. The existing centered, unscaled complete-feature coordinates are
   retained; no missing values are filled. PCA is not fitted separately within
-  two- or three-pool cells. The axes give explained variance; subtitles give
+  two- or three-pool cells. The axes give explained variance; captions give
   feature and pool counts. Every pool is labelled. The key explicitly identifies
   all four Col-0 doses and all four No-0/NIT2 by control/salt combinations.
   No confidence ellipse, sample exclusion or significance claim is added.
@@ -59,7 +59,7 @@ test results retain HKT1. Historical summary figures remain separate outputs.
 
 Every current figure command writes vector PDF and SVG, a losslessly compressed
 600-dpi TIFF, and a 200-dpi PNG preview beside its primary PDF. The completion
-marker requires every registered format, and provenance hashes all four files.
+marker requires every registered format, and provenance hashes all four files and the caption companion.
 Use PDF for scalable figure assembly and TIFF where a raster submission is needed.
 Cairo graphics support is required; no extra plotting packages are installed.
 
@@ -70,3 +70,15 @@ Rscript --vanilla scripts/reproduce_figures.R
 Set `SALT_DATA_ROOT` and `SALT_OUTPUT_ROOT` first; model caching remains optional.
 Individual commands in `docs/manuscript_outputs.md` still work independently.
 All rendered images and figures are generated locally and excluded from Git.
+
+
+Explanatory subtitles and footnotes are omitted from publication artwork. The
+shared `publication_caption()` collector preserves them in
+`<figure_stem>_caption.txt`, deduplicated across the four graphics devices.
+`publication_title()` draws only the panel letter and short identifying heading;
+`publication_key()` retains group keys and sends prose to the caption collector.
+Axes, group labels, observed cell counts, data labels and quantitative color
+scales remain in the figure. Manuscript/report assembly must include the caption
+companion. Caption text is hashed alongside each figure by both reproduction
+runners. This rule also applies to the top-ranked, supporting-trend and six
+computational-extension figures. Numerical models and selection rules are unchanged.

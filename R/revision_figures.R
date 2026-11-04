@@ -2,8 +2,17 @@
 publication_colors <- c(Root="#0072B2", Shoot="#D55E00", `No-0`="#0072B2",
   NIT2="#8B4D9C", ink="#253342", muted="#5D6975", grid="#E6EBEF")
 
+# Explanatory prose belongs to the figure caption, never inside the artwork.
+.publication_caption <- new.env(parent=emptyenv())
+publication_caption <- function(text) {
+  if(length(text)) .publication_caption$lines <- unique(c(.publication_caption$lines,
+    as.character(text[nzchar(text)])))
+  invisible(NULL)
+}
+
 publication_figure <- function(path,width,height,draw) {
   stem<-sub("\\.pdf$","",path)
+  .publication_caption$lines <- character()
   for(format in c("pdf","svg","tiff","png")) {
     target<-paste0(stem,".",format)
     switch(format,
@@ -20,6 +29,7 @@ publication_figure <- function(path,width,height,draw) {
       draw()
     },finally=grDevices::dev.off())
   }
+  writeLines(.publication_caption$lines,paste0(stem,"_caption.txt"),useBytes=TRUE)
 }
 
 publication_range <- function(y,padding=.12) {
@@ -44,7 +54,7 @@ publication_axes <- function(xlim,ylim,xlab="",ylab="",at=NULL,labels=at) {
 
 publication_title <- function(letter,title,subtitle="") {
   mtext(paste(letter,title,sep="   "),side=3,line=1.1,adj=0,font=2,cex=.98)
-  if(nzchar(subtitle))mtext(subtitle,side=3,line=.1,adj=0,cex=.72,col=publication_colors["muted"])
+  if(nzchar(subtitle))publication_caption(paste0("Panel ",letter," (",title,"): ",subtitle,"."))
 }
 
 publication_key <- function(tissue=TRUE,footnote="") {
@@ -52,11 +62,7 @@ publication_key <- function(tissue=TRUE,footnote="") {
   text<-if(tissue)labels else c("No-0","NIT2 overexpressor")
   for(i in 1:2)mtext(text[i],side=3,outer=TRUE,line=.45,adj=c(.32,.68)[i],
     col=publication_colors[labels[i]],cex=.9,font=2)
-  if(nzchar(footnote)){
-    lines<-strsplit(footnote,"\n",fixed=TRUE)[[1]]
-    for(i in seq_along(lines))mtext(lines[i],side=1,outer=TRUE,
-      line=.2-.8*(length(lines)-i),cex=.7,col=publication_colors["muted"])
-  }
+  if(nzchar(footnote))publication_caption(gsub("\n"," ",footnote,fixed=TRUE))
 }
 
 # Small deterministic label placement avoids points and earlier label rectangles.
@@ -138,9 +144,7 @@ build_revision_qc_figure <- function(inputs,settings,destination) {
     labels<-c("No-0 control","No-0 salt","NIT2 control","NIT2 salt")
     for(j in 1:4)key(c(.04,.04,.55,.55)[j],c(.37,.26,.37,.26)[j],labels[j],
       c(21,24,21,24)[j],publication_colors[c("No-0","No-0","NIT2","NIT2")][j])
-    text(0,.14,"Salt: Array 2, 100 mM; proteomics, 75 mM",adj=0,cex=.69)
-    text(0,.05,"Labels: pool IDs; centered, unscaled; no imputation.",adj=0,cex=.65,
-      col=publication_colors["muted"])
+    publication_caption("Salt: Array 2, 100 mM; proteomics, 75 mM. Labels identify pool IDs. Features are centered without variance scaling; no imputation.")
 
   })
 }

@@ -128,3 +128,6 @@ correlation checks: `Rscript --vanilla tests/supporting_tests.R`.
 ## Additional computational analyses
 
 Paired root-shoot dose patterns, independent public salt benchmarks, DAP-seq TF target enrichment and developmental/tissue marker signatures have a separate reproducible extension workflow. See [methods, reference sources, all output IDs and commands](docs/computational_extensions.md). Use `Rscript --vanilla scripts/reproduce_extensions.R --list`; the original 78-artifact workflow remains unchanged. The suggested 10x dataset is excluded at the user's request.
+
+
+Figure text policy (4 November 2026): explanatory subtitles and notes are written to a companion `<figure_stem>_caption.txt` file, rather than drawn inside publication figures. Panel identifiers, gene/tissue headings, axes, treatment keys and quantitative color scales remain in the artwork. Include the companion text in the manuscript/report caption. Both reproduction runners record its SHA-256 together with the figure formats. The numerical models, selection rules and plotted measurements are unchanged.

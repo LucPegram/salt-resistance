@@ -219,7 +219,7 @@ toprank_figure <- function(result,destination) {
   signals<-toprank_signal(result);dataset<-result$dataset
   publication_figure(destination,14,15.4,function(){
     layout(cbind(matrix(1:10,nrow=5,byrow=TRUE),matrix(11:20,nrow=5,byrow=TRUE)))
-    par(mar=c(3.5,3.7,3.7,.9),oma=c(3.1,0,5.1,0),cex=1)
+    par(mar=c(3.5,3.7,2.8,.9),oma=c(.4,0,5.1,0),cex=1)
     for(i in seq_len(nrow(d))){
       a<-d[i,];s<-signals[signals$locus==a$locus,]
       groups<-if(dataset=="array1")s$tissue else s$genotype
@@ -240,12 +240,11 @@ toprank_figure <- function(result,destination) {
       title_lines<-strwrap(label,width=36)
       if(length(title_lines)>2L)title_lines<-c(title_lines[1],paste0(title_lines[2],"..."))
       title_lines[1]<-paste0(substr(a$direction,1,1),sprintf("%02d",a$rank),"  ",title_lines[1])
-      for(j in seq_along(title_lines))mtext(title_lines[j],side=3,line=1.9+(length(title_lines)-j)*.9,
+      for(j in seq_along(title_lines))mtext(title_lines[j],side=3,line=.9+(length(title_lines)-j)*.9,
         adj=0,font=2,cex=.87)
-      mtext(paste(a$locus,if(dataset!="array2")paste0("| selected: ",a$tissue) else "| combined tissues"),
-        side=3,line=1,adj=0,cex=.69,col="#5D6975")
-      mtext(sprintf("log2 change %+.2f | BH q = %.2g",a$log2FC,a$q_BH),
-        side=3,line=.15,adj=0,cex=.69,col="#5D6975")
+      publication_caption(sprintf("Panel %s%02d (%s): %s; %s; log2 change %+.2f; BH q = %.3g.",
+        substr(a$direction,1,1),a$rank,a$Gene_name,a$locus,
+        if(dataset!="array2")paste("selected tissue",a$tissue) else "combined tissues",a$log2FC,a$q_BH))
     }
     title<-c(array1="Array 1 | Col-0 salt dose response",array2="Array 2 | combined-tissue genotype experiment",proteomics="Proteomics | tissue-specific protein abundance")[dataset]
     mtext(title,side=3,outer=TRUE,line=3.4,font=2,cex=1.32,col="#253342")
@@ -255,12 +254,9 @@ toprank_figure <- function(result,destination) {
       "Blue circles / solid: No-0    Purple triangles / dashed: NIT2 overexpressor"
     mtext(key,side=3,outer=TRUE,line=.55,cex=.87,col="#5D6975")
     contrast<-toprank_contrast_label(dataset)
-    mtext(paste("Selection:",contrast,"| BH q < 0.05; one representative tissue per locus where applicable"),
-      side=1,outer=TRUE,line=.25,cex=.83,col="#5D6975")
-    mtext("Points: independently grown plant pools. Lines: condition means, not paired trajectories. No missing protein value is imputed.",
-      side=1,outer=TRUE,line=1.17,cex=.79,col="#5D6975")
-    mtext("Gene selection and ranking use the same data shown; panels are descriptive and have independent signal scales. Full names: companion table.",
-      side=1,outer=TRUE,line=2.05,cex=.76,col="#5D6975")
+    publication_caption(paste("Selection:",contrast,"| BH q < 0.05; one representative tissue per locus where applicable"))
+    publication_caption("Points: independently grown plant pools. Lines: condition means, not paired trajectories. No missing protein value is imputed.")
+    publication_caption("Gene selection and ranking use the same data shown; panels are descriptive and have independent signal scales. Full names: companion table.")
   })
 }
 

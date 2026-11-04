@@ -14,7 +14,7 @@ extension_heatmap <- function(path,mat,title,subtitle,columns,stars=NULL,height=
   labels=rownames(mat),legend="Signed -log10(global BH q); color capped at 6",limit=6) {
   palette<-colorRampPalette(c("#0072B2","#F8FAFC","#C44E52"))(201)
   publication_figure(path,10.5,height,function(){
-    par(mar=c(5.8,17,3.8,1.2),oma=c(2.6,0,0,0))
+    par(mar=c(5.8,17,3.8,1.2),oma=c(.3,0,0,0))
     nr<-nrow(mat);nc<-ncol(mat)
     plot(NA,xlim=c(.5,nc+.5),ylim=c(.5,nr+.5),axes=FALSE,xlab="",ylab="",xaxs="i",yaxs="i")
     for(i in seq_len(nr))for(j in seq_len(nc)){
@@ -28,9 +28,9 @@ extension_heatmap <- function(path,mat,title,subtitle,columns,stars=NULL,height=
     boundaries<-which(head(columns$dataset,-1)!=tail(columns$dataset,-1))+.5
     abline(v=boundaries,col="#596775",lwd=1.4)
     title(main=title,sub="",adj=0,cex.main=1.1,line=2.3)
-    mtext(subtitle,3,line=.9,adj=0,cex=.78,col=publication_colors["muted"])
-    mtext(legend,1,outer=TRUE,line=.2,cex=.75)
-    mtext("A1: Col-0 dose series | A2: No-0/NIT2 array | PR/PS: root/shoot protein; grey: untested",1,outer=TRUE,line=1.25,cex=.7)
+    publication_caption(subtitle)
+    publication_caption(legend)
+    publication_caption("A1: Col-0 dose series; A2: No-0/NIT2 array; PR/PS: root/shoot protein; grey indicates untested comparisons.")
     par(fig=c(.045,.225,.945,.958),new=TRUE,mar=rep(0,4),xpd=NA)
     plot(NA,xlim=c(-limit,limit),ylim=c(0,1),axes=FALSE,xlab="",ylab="",xaxs="i",yaxs="i")
     edges<-seq(-limit,limit,length.out=202)
@@ -111,7 +111,7 @@ extension_dose_figure <- function(z,path) {
         xlim=c(0,max(counts)*1.2),xlab="Loci with dose-joint global q < 0.05",cex.names=.83)
       text(as.numeric(counts)+max(counts)*.035,bp,counts,adj=0,cex=.85)
       title(paste(t,"dose-response mean shapes"),adj=0,cex.main=1.05)
-      mtext("Shapes describe observed means; no monotonicity test is implied",3,line=.25,adj=0,cex=.68)
+      publication_caption("Mean-shape categories describe observed means; no monotonicity test is implied.")
       par(mar=c(4,6.5,3.2,1))
       d<-head(d[order(d$joint_q_global,-abs(d$endpoint_log2FC),d$locus),],20)
       mat<-z$dose$means[d$locus,paste0(t,c(0,50,75,100)),drop=FALSE]
@@ -122,7 +122,7 @@ extension_dose_figure <- function(z,path) {
       names[is.na(names)|nchar(names)>18]<-d$locus[is.na(names)|nchar(names)>18]
       axis(2,at=nrow(mat):1,labels=names,las=1,tick=FALSE,cex.axis=.66)
       title(paste(t,"20 strongest dose-joint loci"),adj=0,cex.main=.97)
-      mtext(sprintf("Mean log2 signal minus control; blue < 0 < red; range +/- %.1f",limit),3,line=.25,adj=0,cex=.68)
+      publication_caption(sprintf("%s heatmap: mean log2 signal minus control; blue < 0 < red; symmetric color range +/- %.3f.",t,limit))
     }
   })
 }

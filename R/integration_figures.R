@@ -29,12 +29,10 @@ build_integration_concordance_figure <- function(inputs,settings,destination) {
       publication_title(LETTERS[(i-1)*3+j],paste(specs$title[j],tissue),
         sprintf("%s genes; r = %.2f; rho = %.2f",format(nrow(a),big.mark=","),
           cor(a$RNA_log2FC,a$protein_log2FC),cor(a$RNA_log2FC,a$protein_log2FC,method="spearman")))
-      mtext(specs$subtitle[j],side=3,line=2.3,adj=0,cex=.6,col=publication_colors["muted"])
+      publication_caption(paste0("Panels ",LETTERS[j]," and ",LETTERS[j+3],": ",specs$subtitle[j],"."))
     }
-    mtext("Joint global BH < 0.05: green points or amber diamonds. Other candidates: amber circles.",
-      side=1,outer=TRUE,line=.05,cex=.68,col=publication_colors["muted"])
-    mtext("Cross-experiment effects; correlations are descriptive, without gene-as-replicate significance tests.",
-      side=1,outer=TRUE,line=.85,cex=.68,col=publication_colors["muted"])
+    publication_caption("Joint global BH < 0.05: green points or amber diamonds. Other candidates: amber circles.")
+    publication_caption("Cross-experiment effects; correlations are descriptive, without gene-as-replicate significance tests.")
   })
 }
 
@@ -75,9 +73,7 @@ build_integration_pathway_figure <- function(inputs,settings,destination) {
       }
       publication_title(LETTERS[i],paste(tissue,"protein integration"),"RNA combined except Col-0 context")
     }
-    mtext("Red: higher relative enrichment in both assays; blue: lower; grey: opposite directions.",
-      side=1,outer=TRUE,line=.05,cex=.66,col=publication_colors["muted"])
-    mtext("Filled: joint global BH < 0.05; size: -log10 joint P (capped at 4); cross: too few measured members.",
-      side=1,outer=TRUE,line=.9,cex=.66,col=publication_colors["muted"])
+    publication_caption("Red: higher relative enrichment in both assays; blue: lower; grey: opposite directions.")
+    publication_caption("Filled: joint global BH < 0.05; size: -log10 joint P (capped at 4); cross: too few measured members.")
   })
 }

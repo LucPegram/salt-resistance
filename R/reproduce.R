@@ -34,6 +34,8 @@ run_artifact <- function(id, project_root, data_root, output_root, cache = new.e
   get(entry$builder, mode = "function")(inputs, analysis_settings, destination)
   output_paths <- if (is.null(entry$formats)) destination else
     paste0(sub("\\.pdf$", "", destination), ".", entry$formats)
+  caption_path <- sub("\\.pdf$", "_caption.txt", destination)
+  if (!is.null(entry$formats) && file.exists(caption_path)) output_paths <- c(output_paths,caption_path)
   if (any(!file.exists(output_paths)) || any(file.info(output_paths)$size == 0)) {
     stop("Output was not successfully written: ", destination)
   }

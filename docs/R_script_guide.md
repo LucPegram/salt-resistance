@@ -468,6 +468,7 @@ descriptive qPCR.
 dpi TIFF and 200 dpi preview PNG. The model data are not altered for display.
 
 **Operations and interpretation:** publication_figure() handles the four graphic devices;
+publication_caption() collects explanatory text in a companion caption file;
 publication_range(), publication_axes(), publication_title(), publication_key() and
 publication_pool_labels() control ranges, axes, headings, legends and deterministic label
 placement. publication_colors stores shared colours. revision_candidate_transcript() chooses
@@ -475,14 +476,14 @@ placement. publication_colors stores shared colours. revision_candidate_transcri
 publication_pca_data() adds dataset, genotype, salt and pool labels to the unchanged
 PCA coordinates; build_manuscript_pca_coordinates() exports this sample table.
 build_revision_qc_figure() plots the five PCA panels in current Figure 4, using a local
-key() helper for explicit treatment/genotype keys; build_revision_dose_figure() adds direct tissue-by-dose
-q values; build_revision_protein_figure() shows observed pools and cell counts;
+key() helper for explicit treatment/genotype keys; build_revision_dose_figure() records direct tissue-by-dose
+q values in its caption companion; build_revision_protein_figure() shows observed pools and cell counts;
 build_revision_contrast_figure() shows contrasts and intervals;
 build_revision_prestress_figure() leads with the control-sharing sensitivity.
 build_publication_qpcr() plots candidate group means/STE using a local key() helper, without
 reconstructing replicate-level tests.
 
-**Named functions, including local helpers:** `publication_figure()`, `publication_range()`,
+**Named functions, including local helpers:** `publication_caption()`, `publication_figure()`, `publication_range()`,
 `publication_axes()`, `publication_title()`, `publication_key()`, `publication_pool_labels()`,
 `publication_pca_data()`, `build_manuscript_pca_coordinates()`,
 `build_revision_qc_figure()`, `revision_candidate_transcript()`,

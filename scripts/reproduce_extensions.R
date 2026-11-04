@@ -42,6 +42,7 @@ for(id in ids){
     benchmark=extension_benchmark_figure(z,path),concordance=extension_benchmark_figure(z,path,TRUE),
     TF=extension_tf_figure(z,path),markers=extension_marker_figure(z,path),report=extension_report(z,path))
   files<-if(type%in%c("table","report"))path else paste0(sub("\\.pdf$","",path),".",c("pdf","svg","png","tiff"))
+  if(!type%in%c("table","report"))files<-c(files,sub("\\.pdf$","_caption.txt",path))
   stopifnot(all(file.exists(files)),all(file.info(files)$size>0))
   if(!identical(input_hashes,vapply(input_paths,hash,""))||!identical(reference_hashes,vapply(paths,hash,""))||
      !identical(unname(code_before),unname(vapply(code_paths,hash,""))))stop("Input/reference/code changed during run")
