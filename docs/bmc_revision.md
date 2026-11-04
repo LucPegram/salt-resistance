@@ -122,3 +122,9 @@ signature tests and every 781-test marker mode, not only selected basal scores.
 Every eligible basal external score is also exported for manuscript display.
 This is a model sensitivity, not an exact randomization test; the original small
 number of biological pools remains the limit on sampling precision.
+
+The score entry point also accepts one output ID, `all` or `--list`.
+`figure_external_score_inference` displays every Array 2 pool for the focal
+external reference and the moderated/ordinary basal intervals. Its reference was
+selected for display after inspecting the complete family; no signature membership
+or primary testing family is changed. Notes remain in a caption companion.

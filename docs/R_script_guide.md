@@ -1478,13 +1478,13 @@ source-family correction is recomputed after display selection. Run one ID,
 contrasts from the registered sample table. `bmc_unmoderated_scores()` refits
 ordinary residual-variance score models with the original paired-score covariance,
 checks equality of point estimates, and adjusts every eligible test by BH/BY.
-It compares uncertainty with empirical-Bayes moderation without changing scores,
+`bmc_score_inference_figure()` displays every focal-reference Array 2 pool and both basal intervals, with explanations in its caption. The module compares uncertainty with empirical-Bayes moderation without changing scores,
 reference selection or target eligibility. Negative outcomes remain in the export.
 
 ### [`scripts/reproduce_score_inference_sensitivity.R`](../scripts/reproduce_score_inference_sensitivity.R)
 
 Reads completed sample, external-score and marker-score results, exports all 141
-external and 781-per-mode marker tests plus every basal external display row.
+external and 781-per-mode marker tests plus every basal external display row and the external-score inference figure in four formats. Each output ID can be reproduced separately.
 `inside()` separates roots and `hash()` records source, code and output hashes.
 
 ### [`tests/score_sensitivity_tests.R`](../tests/score_sensitivity_tests.R)

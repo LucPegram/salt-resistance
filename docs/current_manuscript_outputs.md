@@ -3,7 +3,7 @@
 Statistical output IDs are stable even when manuscript numbering changes.
 Manuscript text, measurements and generated files remain outside this code-only
 repository. This crosswalk describes the BMC revision with 4 main tables,
-5 main figures, 25 supplementary tables and 9 supplementary figures.
+6 main figures, 25 supplementary tables and 9 supplementary figures.
 
 Use `scripts/reproduce.R <ID>` for primary output IDs, with `SALT_DATA_ROOT`
 pointing to regenerated quantile inputs and `SALT_OUTPUT_ROOT` outside the code.
@@ -52,6 +52,7 @@ Captions are separate from figure artwork. Each output has a provenance record.
 | Figure 3 | `figure_revision_contrasts` / candidate_contrast_intervals.pdf |
 | Figure 4 | `figure_revision_qc` / sample_PCA.pdf |
 | Figure 5 | `figure_integration_concordance` / transcript_protein_effects.pdf |
+| Figure 6 | `reproduce_score_inference_sensitivity.R figure_external_score_inference` |
 | S1 | `reproduce_bmc_robustness.R figure_dose_omission` |
 | S2 | `reproduce_extensions.R figure_dose_programs` |
 | S3 | `reproduce_extensions.R figure_dose_candidates` |

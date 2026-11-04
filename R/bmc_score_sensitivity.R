@@ -59,3 +59,32 @@ bmc_unmoderated_scores <- function(scores,primary,metadata,feature_column) {
  d$ordinary_global_BY<-ave(d$ordinary_P,d$mode,FUN=function(p)p.adjust(p,'BY'))
  d
 }
+
+bmc_score_inference_figure <- function(scores,result,metadata,path) {
+ d<-scores[scores$dataset=='Array2'&scores$reference=='AtGen_Root_hour1',]
+ m<-metadata[metadata$dataset=='Array2',];m<-m[match(d$sample,m$sample),]
+ stopifnot(nrow(d)==8L,!anyNA(m$sample))
+ cell<-paste0(ifelse(m$genotype=='No-0','WT','OE'),ifelse(m$salt_mM==0,'0','S'))
+ a<-result[result$dataset=='Array2'&result$feature=='AtGen_Root_hour1'&result$contrast=='baseline_genotype',]
+ stopifnot(nrow(a)==1L)
+ publication_figure(path,9.2,4.4,function(){
+  par(mfrow=c(1,2),mar=c(4.6,4.6,2.8,1.1))
+  publication_axes(c(.6,4.4),publication_range(d$score),ylab='Salt signature score',
+   at=1:4,labels=c('No-0\n0','No-0\n100','NIT2\n0','NIT2\n100'),xlab='Genotype and NaCl (mM)')
+  for(i in 1:4){
+   k<-which(cell==c('WT0','WTS','OE0','OES')[i]);stopifnot(length(k)==2L)
+   color<-if(i<3)'#0072B2' else '#8B4D9C'
+   segments(i-.2,mean(d$score[k]),i+.2,mean(d$score[k]),col=color,lwd=2)
+   points(i+c(-.06,.06),d$score[k],pch=if(i%%2)21 else 24,bg=color,col='white',cex=1.2)
+  }
+  publication_title('A','Pool scores')
+  lo<-c(a$primary_lower95,a$ordinary_lower95);hi<-c(a$primary_upper95,a$ordinary_upper95)
+  plot(NA,xlim=publication_range(c(0,lo,hi)),ylim=c(.5,2.5),xlab='Basal NIT2 minus No-0 score',ylab='',axes=FALSE)
+  axis(1);axis(2,at=c(2,1),labels=c('Moderated','Ordinary'),las=1,tick=FALSE)
+  abline(v=0,lty=3,col='#8C95A4')
+  segments(lo,c(2,1),hi,c(2,1),col=c('#0072B2','#D55E00'),lwd=1.5)
+  points(rep(a$score_difference,2),c(2,1),pch=c(21,24),bg=c('#0072B2','#D55E00'),col='white',cex=1.25)
+  publication_title('B','Basal contrast')
+  publication_caption('Panel A shows all eight Array 2 biological pools for the independently defined AtGenExpress 1 h root signature. Horizontal segments are condition means; circles denote 0 mM and triangles 100 mM NaCl; blue denotes No-0 and purple NIT2. Each cell has two independent pools. Scores are mean fractional ranks of externally up-regulated genes minus those of externally down-regulated genes, not log2 abundances. Panel B shows the same basal point estimate with pointwise 95% intervals under robust trend-moderated variance and ordinary residual variance. These are two uncertainty calculations on the same pools, not independent confirmations. Global BH/BY values refer to the complete 141-test families and are provided in the manuscript and complete score-inference table. This reference was chosen for display after inspection of the full family; no external gene membership or primary inference was changed.')
+ })
+}
