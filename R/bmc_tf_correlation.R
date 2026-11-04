@@ -36,7 +36,7 @@ bmc_tf_correlation <- function(dap,objects) {
   indices<-lapply(measured[valid],function(g)match(g,rownames(o$y)))
   r<-bmc_residual_coordinates(o$y,o$design,o$block,o$correlation)
   rho<-vapply(indices,function(i)bmc_mean_residual_correlation(r$coordinates,i),0.0)
-  used<-pmin(1-1e-8,pmax(0,rho))
+  used<-setNames(pmin(1-1e-8,pmax(0,rho)),names(rho))
   audit[[o$dataset]]<-data.frame(dataset=o$dataset,TF=names(indices),targets=lengths(indices),
    universe=nrow(o$y),residual_df=r$df,raw_residual_correlation=rho,used_residual_correlation=used,
    harvested_pair_correlation=if(is.null(o$correlation))NA_real_ else o$correlation)
@@ -50,7 +50,9 @@ bmc_tf_correlation <- function(dap,objects) {
     residual_df=r$df,assay=o$assay,tissue=o$tissue)
   }
  }
- d<-do.call(rbind,rows);d$q_global<-p.adjust(d$P,'BH');d$q_BY<-p.adjust(d$P,'BY')
+ d<-do.call(rbind,rows)
+ stopifnot(all(is.finite(d$used_correlation)),all(is.finite(d$residual_correlation)))
+ d$q_global<-p.adjust(d$P,'BH');d$q_BY<-p.adjust(d$P,'BY')
  d$TF_name<-labels$TF_name[match(d$TF,labels$TF)];d$TF_family<-labels$TF_family[match(d$TF,labels$TF)]
  list(TF_residual_correlation=do.call(rbind,audit),TF_estimated_correlation_tests=d)
 }

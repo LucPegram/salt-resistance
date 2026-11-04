@@ -13,4 +13,14 @@ a<-z$whitener
 stopifnot(max(abs(crossprod(a,z$covariance%*%a)-diag(12)))<1e-12)
 reference<-limma::interGeneCorrelation((y%*%a)[i,],crossprod(a,x))$correlation
 stopifnot(abs(bmc_mean_residual_correlation(z$coordinates,i)-reference)<1e-12)
+source(file.path(project_root,'config','extensions.R'))
+rownames(y)<-paste0('g',1:60)
+dap<-list(edges=data.frame(TF=rep(c('tf1','tf2'),each=10),target=paste0('g',1:20),
+ TF_name=rep(c('One','Two'),each=10),TF_family='test'))
+o<-list(y=y,design=x,block=b,correlation=rho,dataset='synthetic',assay='RNA',tissue='paired',
+ selected_contrasts='test',table=data.frame(feature=rownames(y),contrast='test',log2FC=rnorm(60),SE=1))
+ans<-bmc_tf_correlation(dap,list(o))
+stopifnot(all(is.finite(ans$TF_estimated_correlation_tests$used_correlation)),
+ identical(ans$TF_estimated_correlation_tests$used_correlation,
+  ans$TF_residual_correlation$used_residual_correlation))
 cat('Residual correlation agrees with limma; paired covariance whitening verified\n')
