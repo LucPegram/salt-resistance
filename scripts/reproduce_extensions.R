@@ -25,8 +25,8 @@ fingerprint<-digest::digest(list(code_before,input_hashes,reference_hashes,exten
 cachefile<-file.path(output_root,"derived_analysis_cache.rds")
 cached<-if(file.exists(cachefile))readRDS(cachefile) else NULL
 if(!is.null(cached)&&identical(cached$fingerprint,fingerprint)&&
-   identical(cached$sha256,digest::digest(cached$value,algo="sha256"))){z<-cached$value;rm(cached);message("Verified extension cache")}
-else{
+   identical(cached$sha256,digest::digest(cached$value,algo="sha256"))){z<-cached$value;rm(cached);message("Verified extension cache")
+}else{
   inputs<-setNames(lapply(input_ids,read_input,data_root=data_root,specs=input_specs),input_ids)
   set.seed(extension_settings()$seed);z<-extension_compute(inputs,paths)
   saveRDS(list(fingerprint=fingerprint,value=z,sha256=digest::digest(z,algo="sha256")),cachefile,compress=FALSE)
