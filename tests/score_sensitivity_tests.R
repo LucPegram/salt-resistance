@@ -8,6 +8,10 @@ names(p)[names(p)=='log2FC']<-'score_difference'
 p$dataset<-'test';p$q_global<-p.adjust(p$P,'BH');p$q_BY<-p.adjust(p$P,'BY')
 s<-data.frame(dataset='test',reference=rep(rownames(y),ncol(y)),sample=rep(m$sample,each=nrow(y)),score=as.vector(y))
 ans<-bmc_unmoderated_scores(s,p,m,'reference')
+ss<-s;names(ss)[names(ss)=='reference']<-'set'
+pp<-p;names(pp)[names(pp)=='feature']<-'set'
+marker<-bmc_unmoderated_scores(ss,pp,m,'set')
+stopifnot(identical(marker,ans))
 fit<-lm(y[1,]~0+des$design)
 estimate<-coef(fit)[3]-coef(fit)[1]
 variance<-sum(vcov(fit)[c(1,3),c(1,3)]*matrix(c(1,-1,-1,1),2))

@@ -18,6 +18,7 @@ bmc_score_design <- function(metadata) {
 }
 
 bmc_unmoderated_scores <- function(scores,primary,metadata,feature_column) {
+ if(!'feature'%in%names(primary) && feature_column%in%names(primary))primary$feature<-primary[[feature_column]]
  stopifnot(all(c('feature','contrast','score_difference','SE','P','q_global','q_BY')%in%names(primary)))
  result<-list()
  modes<-if('mode'%in%names(scores))unique(scores$mode) else 'primary'
