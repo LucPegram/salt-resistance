@@ -136,3 +136,8 @@ For the integrated manuscript, `scripts/reproduce_extension_manuscript.R`
 formats Supplementary Tables S18-S20 individually from the complete extension
 CSVs. See `docs/computational_extensions.md` for the source/output roots and
 selection rules. S17 uses `dose_discoveries` directly.
+
+The paired-array influence analysis requested during review is reproduced by
+`scripts/reproduce_bmc_robustness.R`. It retains all primary samples and reports
+every harvested-pair omission under frozen and refitted normalization. See
+`docs/bmc_revision.md`.

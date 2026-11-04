@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **94 scripts**: **47 current workflow,
+script in this repository. It covers **97 scripts**: **50 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026 and the eight computational-extension files added on 4 November 2026. Original module descriptions were checked against
@@ -1382,3 +1382,29 @@ folder separation, record SHA-256 and match complete dataset/contrast/TF-or-mark
 identities. Outputs are three CSVs with original statistics, provenance and
 completion records. Supplementary Table S17 directly uses the existing
 `dose_discoveries` CSV.
+
+
+### [`R/bmc_robustness.R`](../R/bmc_robustness.R)
+
+`bmc_dose_metadata()` parses doses and harvested-pair labels.
+`bmc_collapse_logspots()` averages technical spots within transcript IDs and
+unique transcript signals within loci. `bmc_fit_dose()` fits the paired eight-cell
+model and complete fifteen-contrast/three-joint-test families.
+`bmc_dose_omissions()` checks normalization reconstruction and runs all twelve
+paired omissions under frozen/refitted normalization; its local `collect()`
+records every focal estimate, interval, joint result and mean-shape count.
+`bmc_omission_figure()` renders four focal-gene sensitivity panels with all
+omissions. No function selects an omission to replace the primary data.
+
+### [`scripts/reproduce_bmc_robustness.R`](../scripts/reproduce_bmc_robustness.R)
+
+Validates separate roots, records input/code/output hashes with `inside()` and
+`hash()` helpers, verifies or computes a fingerprinted external cache, and
+reproduces six tables and one figure individually or together. See
+`docs/bmc_revision.md` for the exact normalization and testing-family scope.
+
+### [`tests/bmc_robustness_tests.R`](../tests/bmc_robustness_tests.R)
+
+Uses synthetic paired pools to check complete-pair omission, independently
+calculated cell-mean contrasts, interval construction and technical spot collapse.
+The local `mu()` helper computes means separately from the model implementation.
