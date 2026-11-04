@@ -1,10 +1,10 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **85 scripts**: **38 current workflow,
+script in this repository. It covers **93 scripts**: **46 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
-module added on 3 November 2026. Original module descriptions were checked against
+module added on 3 November 2026 and the eight computational-extension files added on 4 November 2026. Original module descriptions were checked against
 [`c1c3847`](https://github.com/LucPegram/salt-resistance/tree/c1c3847f630b87c36ee3d0f9f7adc0974460c869);
 [dataset-ranking methods](top_rankings.md) explain the additional analysis.
 

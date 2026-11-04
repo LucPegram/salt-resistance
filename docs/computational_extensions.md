@@ -92,3 +92,12 @@ Signed evidence heatmaps use direction times -log10(global BH q), capped at six 
 | `tests/extension_tests.R` | Tests contrast signs/pairing, ambiguous mapping, fixed-membership ranks, untested heatmap cells, duplicate rejection and DAP streaming/field validation using synthetic fixtures. |
 
 Additional primary-method reference: [limma User's Guide](https://bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf). No machine-learning classifier, inferred experimental batch, cell-fraction deconvolution, or cross-assay sample pairing is introduced.
+
+### Named extension functions
+
+- `extension_paths`, `extension_read_matrix`, `extension_read_platform`, `extension_map_matrix`, `extension_read_dap` and `extension_read_markers` locate external inputs, validate sample metadata, exclude ambiguous mappings and build independently sourced target/marker memberships.
+- `extension_fit`, `extension_dose` and `extension_external` fit project dose contrasts and independent public salt references; `extension_objects` fixes the assay-specific locus universes and factorial designs.
+- `extension_rank_scores` calculates fixed-membership fractional-rank scores; `extension_score_fit` tests biological-sample score changes; `extension_benchmark`, `extension_markers` and `extension_tf` implement the three distinct inferential analyses and their specified testing families.
+- `extension_columns`, `extension_column_label`, `extension_matrix` and `extension_heatmap` construct unambiguous display cells and common legends; the five `*_figure` functions render dose, candidate, external, TF and marker figures (the external function also renders the concordance figure).
+- `extension_compute` coordinates model/resource loading; `extension_universe_table`, `extension_dose_summary`, `extension_sample_table` and `extension_tables` assemble the auditable tables; `extension_report_pages` and `extension_report` generate the results report from calculated values; `extension_registry` lists all individually reproducible outputs.
+- `extension_settings` and `extension_resources` return the analysis settings and eight resource URLs. The two entry-point scripts contain top-level download/run/provenance commands; the test file contains synthetic assertions rather than scientific measurements.
