@@ -14,13 +14,13 @@ extension_heatmap <- function(path,mat,title,subtitle,columns,stars=NULL,height=
   labels=rownames(mat),legend="Signed -log10(global BH q); color capped at 6",limit=6) {
   palette<-colorRampPalette(c("#0072B2","#F8FAFC","#C44E52"))(201)
   publication_figure(path,10.5,height,function(){
-    par(mar=c(6.7,17,3.8,1.2),oma=c(1.4,0,0,0))
+    par(mar=c(5.8,17,3.8,1.2),oma=c(2.6,0,0,0))
     nr<-nrow(mat);nc<-ncol(mat)
     plot(NA,xlim=c(.5,nc+.5),ylim=c(.5,nr+.5),axes=FALSE,xlab="",ylab="",xaxs="i",yaxs="i")
     for(i in seq_len(nr))for(j in seq_len(nc)){
       v<-mat[i,j];color<-if(is.finite(v))palette[round((max(-limit,min(limit,v))+limit)/(2*limit)*200)+1] else "#E3E8ED"
       rect(j-.5,nr-i+.5,j+.5,nr-i+1.5,col=color,border="white",lwd=.35)
-      if(!is.null(stars)&&isTRUE(stars[i,j]))text(j,nr-i+1,"*",cex=.92,col=if(abs(v)>3)"white" else "#253342")
+      if(!is.null(stars)&&!is.na(stars[i,j])&&stars[i,j]!=0)text(j,nr-i+1,"*",cex=.92,col=if(abs(v)>3)"white" else "#253342")
     }
     axis(2,at=nr:1,labels=labels,las=1,tick=FALSE,cex.axis=.72,line=-.5)
     axis(1,at=seq_len(nc),labels=mapply(extension_column_label,columns$dataset,columns$contrast),
@@ -30,7 +30,13 @@ extension_heatmap <- function(path,mat,title,subtitle,columns,stars=NULL,height=
     title(main=title,sub="",adj=0,cex.main=1.1,line=2.3)
     mtext(subtitle,3,line=.9,adj=0,cex=.78,col=publication_colors["muted"])
     mtext(legend,1,outer=TRUE,line=.2,cex=.75)
-    mtext("A1: Col-0 dose series | A2: No-0/NIT2 array | PR/PS: root/shoot protein; grey: untested",1,outer=TRUE,line=1.1,cex=.7)
+    mtext("A1: Col-0 dose series | A2: No-0/NIT2 array | PR/PS: root/shoot protein; grey: untested",1,outer=TRUE,line=1.25,cex=.7)
+    par(fig=c(.045,.225,.945,.958),new=TRUE,mar=rep(0,4),xpd=NA)
+    plot(NA,xlim=c(-limit,limit),ylim=c(0,1),axes=FALSE,xlab="",ylab="",xaxs="i",yaxs="i")
+    edges<-seq(-limit,limit,length.out=202)
+    rect(head(edges,-1),0,tail(edges,-1),1,col=palette,border=NA)
+    axis(1,at=c(-limit,0,limit),labels=c(-limit,0,limit),cex.axis=.65,tck=-.2,line=0,mgp=c(0,.5,0))
+    mtext(if(limit==.5)"Spearman r" else "Signed -log10 q",3,line=.4,cex=.7)
   })
 }
 
@@ -44,7 +50,10 @@ extension_matrix <- function(d,rowfield,rows,columns,value) {
 
 extension_benchmark_figure <- function(z,path,correlation=FALSE) {
   d<-if(correlation)z$benchmark$correlations else z$benchmark$table
-  cols<-extension_columns(z$objects);refs<-sort(unique(d$reference))
+  cols<-extension_columns(z$objects)
+  meta<-unique(z$external$table[c("reference","source","tissue","hours","salt_mM")])
+  meta<-meta[order(match(meta$source,c("GSE5620/GSE5623","GSE223207")),meta$tissue,meta$hours,meta$salt_mM),]
+  refs<-meta$reference[meta$reference%in%unique(d$reference)]
   if(correlation){v<-d$Spearman;limit<-.5;legend<-"Spearman correlation of gene-level effects; color capped at +/-0.5; no gene-wise correlation P-values";stars<-NULL}
   else{v<-sign(d$score_difference)*pmin(6,-log10(pmax(d$q_global,1e-300)));limit<-6
     legend<-"Signed -log10(global BH q); color capped at 6; * global q < 0.05; positive = stronger external salt signature"
@@ -55,7 +64,8 @@ extension_benchmark_figure <- function(z,path,correlation=FALSE) {
   labels<-gsub("_hour"," / ",labels,fixed=TRUE);labels<-gsub("_"," ",labels,fixed=TRUE)
   labels<-ifelse(startsWith(refs,"AtGen"),paste0(labels," h"),paste0(labels," mM"))
   extension_heatmap(path,mat,if(correlation)"External salt-effect concordance" else "Independent salt-response signatures",
-    "References: AtGenExpress 150 mM, 0.5-24 h; GSE223207 root, 25-100 mM, 15 min",cols,stars,
+    if(correlation || any(startsWith(refs,"Hydro")))"References: AtGenExpress 150 mM, 0.5-24 h; GSE223207 root, 25-100 mM, 15 min" else
+      "AtGenExpress 150 mM, 0.5-24 h; no eligible thresholded signatures from the 15-min study",cols,stars,
     labels=labels,height=7.1,limit=limit,legend=legend)
 }
 
@@ -68,7 +78,7 @@ extension_tf_figure <- function(z,path) {
   stars<-extension_matrix(d,"TF",selected,cols,d$q_global<.05)
   extension_heatmap(path,mat,"Transcription-factor target enrichment",
     "20 TFs with the smallest global q; DAP-seq targets; competitive rank-based CAMERA, correlation 0.01",cols,stars,
-    labels=paste(labels,selected,sep=" / "),height=8.2,
+    labels=ifelse(labels==selected,selected,paste(labels,selected,sep=" / ")),height=8.2,
     legend="Signed -log10(global BH q); * q < 0.05; positive = targets shifted upward; enrichment does not establish TF activity")
 }
 
@@ -122,7 +132,7 @@ extension_candidate_figure <- function(z,path) {
     `CDKA;1`="AT3G48750",`LRK10L-1.2`="AT1G18390")
   d<-z$dose$table
   publication_figure(path,9.6,6.6,function(){
-    par(mfrow=c(2,3),mar=c(4,4,3,.7),oma=c(1,0,1.5,0))
+    par(mfrow=c(2,3),mar=c(4,4,3,.7),oma=c(2.1,0,2,0))
     for(i in seq_along(loci)){
       dd<-d[d$feature==loci[i]&grepl("^(Root|Shoot)_(50v0|75v50|100v75)$",d$contrast),]
       publication_axes(c(.65,3.35),publication_range(c(dd$lower95,dd$upper95)),"Dose increment (mM)","Change in log2 signal",

@@ -80,7 +80,9 @@ extension_report_pages <- function(z) {
   basal<-b[b$contrast=="baseline_genotype",];basal<-basal[order(basal$q_global),]
   sig_basal<-basal[basal$q_global<.05,]
   topbasal<-if(nrow(sig_basal))vapply(seq_len(min(6,nrow(sig_basal))),function(i){x<-sig_basal[i,]
-    paste(x$dataset,x$reference,": score change",fmt(x$score_difference),"; global q",fmt(x$q_global))},"") else
+    nit2<-any(z$benchmark$members$reference==x$reference & z$benchmark$members$locus=="AT3G44300")
+    paste(x$dataset,x$reference,": score change",fmt(x$score_difference),"; global BH q",fmt(x$q_global),
+      "; BY q",fmt(x$q_BY),"; NIT2 in reference signature:",if(nit2)"yes" else "no")},"") else
     "No baseline-genotype salt-signature score passed global BH q < 0.05."
   tfp<-t[t$mode=="primary",];tfp<-tfp[order(tfp$q_global,tfp$TF),]
   top_tf<-vapply(seq_len(min(5,nrow(tfp))),function(i){x<-tfp[i,]
@@ -91,7 +93,7 @@ extension_report_pages <- function(z) {
   mg<-mg[order(mg$q_global,mg$set),]
   marker_lines<-vapply(seq_len(min(7,nrow(mg))),function(i){x<-mg[i,]
     ss<-m[m$mode=="without_focal_candidates"&m$dataset==x$dataset&m$contrast==x$contrast&m$set==x$set,]
-    paste(x$set,":",x$contrast,"change",fmt(x$score_difference),"; q",fmt(x$q_global),
+    paste(x$set,":",x$contrast,"change",fmt(x$score_difference),"; BH q",fmt(x$q_global),"; BY q",fmt(x$q_BY),
       "; focal-gene-excluded q",if(nrow(ss))fmt(ss$q_global) else "not eligible")},"")
   list(
     `Design and dose-response findings`=c(
@@ -112,6 +114,9 @@ extension_report_pages <- function(z) {
       "GSE223207: Col-0 hydroponic roots, age 16 days, 25/50/75/100 mM, 15 minutes, two arrays per cell. Deposited GCRMA log2 values were used without another log transform. All 16 deposited treatment groups remain distinct when estimating residual variance; only four NaCl-control contrasts define salt signatures.",
       "Each public signature requires external within-contrast BH q < 0.05 and |log2FC| >= log2(1.5). Up/down sets must each have at least ten measured members. A score is mean within-sample fractional rank of Up genes minus that of Down genes. Differential score tests use biological samples, paired root-shoot structure where applicable, and a global BH/BY family. No current-project outcome selected signature genes.",
       paste(nrow(b),"eligible signature-contrast tests;",sum(b$q_global<.05),"global BH discoveries;",sum(b$q_BY<.05),"global BY discoveries."),
+      paste("Eligible thresholded reference signatures:",length(unique(b$reference[startsWith(b$reference,"AtGen")])),
+        "AtGenExpress time/tissue contexts and",length(unique(b$reference[startsWith(b$reference,"Hydro")])),
+        "15-minute hydroponic contexts. All hydroponic gene-effect correlations are retained, even when no signature meets the significance/effect/coverage criteria. No cutoff was relaxed to obtain signatures."),
       "Baseline NIT2 minus No-0 results with global BH q < 0.05:",topbasal,
       "Effect-vector correlations and direction agreement are descriptive across shared loci, with no gene-count-based significance tests. A positive baseline signature is compatible with salt-response resemblance; it cannot establish protection, stress memory, or equivalence to a salt-treated plant.",
       "These references capture early responses and differ in dose, age, medium, platform, and genotype from the current experiments. They are independent contextual benchmarks, not matched replication of the two-week response. Cackett et al. 2022 material was not used as an independent reference."
@@ -126,6 +131,9 @@ extension_report_pages <- function(z) {
     `Developmental and tissue-marker signatures`=c(
       "Developmental/cell identity sets were obtained from Lee et al. 2025 Tables S1-S2, including Shahan et al. 2022 root markers, three broad root stages, literature proliferation markers, and top 50 eligible markers per annotated 21-day rosette cluster. Tissue-specific tests are restricted to anatomically applicable signatures; combined-tissue Array 2 allows both organ signatures.",
       "Marker scores are mean within-sample fractional expression ranks (minimum five measured genes). They measure signature expression, not cell abundance. Primary global BH/BY and a separate sensitivity excluding focal candidates are supplied. No marker score was regressed out of the primary expression models.",
+      paste("Array 2 baseline marker discoveries:",sum(m$mode=="primary"&m$dataset=="Array2"&m$contrast=="baseline_genotype"&m$q_global<.05),
+        "under global BH;",sum(m$mode=="primary"&m$dataset=="Array2"&m$contrast=="baseline_genotype"&m$q_BY<.05),
+        "under global BY. These changes motivate developmental alternatives but do not establish altered cell proportions."),
       "Strongest Array 2 basal/interaction marker tests (ranked regardless of significance):",marker_lines
     ),
     `Interpretation, reproducibility and sources`=c(
