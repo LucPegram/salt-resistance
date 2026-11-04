@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **101 scripts**: **54 current workflow,
+script in this repository. It covers **104 scripts**: **57 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026 and the eight computational-extension files added on 4 November 2026. Original module descriptions were checked against
@@ -1436,3 +1436,25 @@ and exports thirteen tables plus the external recovered-probe FASTA.
 
 Checks independently constructed exact, reverse-strand and duplicate-gene
 examples and rejects an apparent match crossing concatenated CDS boundaries.
+
+
+### [`R/bmc_tf_correlation.R`](../R/bmc_tf_correlation.R)
+
+`bmc_residual_coordinates()` whitens the harvested-pair covariance and obtains
+normalized residual coordinates in the residual subspace of the original design.
+`bmc_mean_residual_correlation()` calculates the mean off-diagonal correlation
+without constructing a gene-by-gene matrix. `bmc_tf_correlation()` applies these
+estimates to the fixed DAP-seq target sets and the existing moderated statistics,
+then adjusts the full test family by BH and BY. Negative correlation estimates
+are set to zero for the test; raw estimates are retained in the audit.
+
+### [`scripts/reproduce_tf_residual_correlation.R`](../scripts/reproduce_tf_residual_correlation.R)
+
+Refits the primary gene-level assay objects, reads the pinned DAP-seq resource,
+and exports the correlation audit and complete enrichment sensitivity table.
+`inside()` enforces separate input/output roots and `hash()` records provenance.
+
+### [`tests/tf_residual_correlation_tests.R`](../tests/tf_residual_correlation_tests.R)
+
+Checks the correlation calculation against limma on synthetic unpaired and
+paired designs, and verifies that the covariance whitening produces identity.

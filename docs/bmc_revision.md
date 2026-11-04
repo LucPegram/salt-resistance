@@ -72,3 +72,23 @@ extension resources), `SALT_PROBE_REFERENCE_ROOT` and `SALT_OUTPUT_ROOT` to
 separate external roots. Run `Rscript --vanilla scripts/fetch_probe_reference.R`,
 then `Rscript --vanilla scripts/reproduce_probe_mapping.R`. Thirteen CSV outputs,
 the complete recovered probe FASTA and per-output provenance are generated.
+
+
+## TF target residual correlation sensitivity
+
+`reproduce_tf_residual_correlation.R` preserves the original moderated feature
+statistics, target memberships and eligible test family. It estimates average
+target residual correlation from the original assay design. The paired dose
+assay first whitens expression and design with the fitted harvested-pair
+covariance; all sets use residual coordinates, not correlation across condition
+means. Negative estimates are truncated to zero for rank CAMERA; both raw and
+used estimates are exported. Global BH and BY cover all 5,935 tests separately
+from the fixed 0.01 and 0.05 analyses. Residual degrees of freedom are 16 for
+Array 1, four for Array 2 and eight for each protein assay, so estimated
+correlations remain uncertain. This sensitivity does not establish TF activity.
+
+Set `SALT_R_LIB`, `SALT_DATA_ROOT`, `SALT_REFERENCE_ROOT` and `SALT_OUTPUT_ROOT`
+to external locations and run
+`Rscript --vanilla scripts/reproduce_tf_residual_correlation.R`. The script
+exports `TF_residual_correlation.csv` and `TF_estimated_correlation_tests.csv`
+with complete input/code/output hashes and package versions.
