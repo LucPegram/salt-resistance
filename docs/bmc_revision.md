@@ -92,3 +92,18 @@ to external locations and run
 `Rscript --vanilla scripts/reproduce_tf_residual_correlation.R`. The script
 exports `TF_residual_correlation.csv` and `TF_estimated_correlation_tests.csv`
 with complete input/code/output hashes and package versions.
+
+
+## Manuscript display tables
+
+Set `SALT_PRIMARY_RESULTS` (quantile reanalysis), `SALT_PROBE_RESULTS`,
+`SALT_PAIR_RESULTS`, `SALT_TF_RESULTS`, `SALT_EXTENSION_ROOT` and
+`SALT_OUTPUT_ROOT` to the separate completed result locations. Run
+`Rscript --vanilla scripts/reproduce_bmc_manuscript_tables.R all` or one ID
+from `--list`. Five display CSVs preserve the complete source-family corrections.
+The probe table counts queries separately from physical spots; the pair table
+shows every prespecified contrast involving the influential root dose and the
+shoot 75-versus-control comparison under both strategies; full omission results
+remain in their original complete CSVs. The TF display includes every estimated-
+correlation BH hit and WRKY3 at all three settings, rather than only the most
+favourable setting. These selections are not new discovery families.

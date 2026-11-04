@@ -1,0 +1,74 @@
+# Select display rows from complete reviewer-response outputs. No fitted model,
+# significance cutoff or source adjustment is recomputed on the display subset.
+script<-sub('^--file=','',grep('^--file=',commandArgs(FALSE),value=TRUE))
+source(file.path(dirname(script),'bootstrap.R'))
+ids<-c('table_probe_audit','table_pair_influence','table_supporting_candidates','table_strict_probe_baseline','table_TF_correlations')
+args<-commandArgs(TRUE)
+if(length(args)!=1L||!args%in%c('all','--list',ids))stop('Provide one table ID, all or --list')
+if(args=='--list'){cat(ids,sep='\n');quit(status=0)}
+roots<-c(primary=Sys.getenv('SALT_PRIMARY_RESULTS'),probe=Sys.getenv('SALT_PROBE_RESULTS'),
+ qc=Sys.getenv('SALT_PAIR_RESULTS'),tf=Sys.getenv('SALT_TF_RESULTS'),extension=Sys.getenv('SALT_EXTENSION_ROOT'))
+out<-Sys.getenv('SALT_OUTPUT_ROOT')
+if(any(!nzchar(c(roots,out))))stop('Set all result roots and output root')
+roots<-vapply(roots,normalizePath,'',mustWork=TRUE)
+inside<-function(a,b)identical(a,b)||startsWith(a,paste0(b,'/'))
+dir.create(out,recursive=TRUE,showWarnings=FALSE);out<-normalizePath(out,mustWork=TRUE)
+if(any(vapply(c(roots,project_root),function(p)inside(out,p)||inside(p,out),TRUE)))stop('Separate source, code and output roots')
+sources<-c(
+ audit=file.path(roots['probe'],'probe_feature_audit/probe_feature_audit.csv'),
+ reconstruction=file.path(roots['probe'],'probe_reconstruction_audit/probe_reconstruction_audit.csv'),
+ metrics=file.path(roots['qc'],'dose_omission_metrics/dose_omission_metrics.csv'),
+ dual=file.path(roots['primary'],'table_supporting_dual/supporting_dual.csv'),
+ three=file.path(roots['primary'],'table_supporting_three/supporting_three_datasets.csv'),
+ baseline=file.path(roots['probe'],'probe_sensitive_external_tests/probe_sensitive_external_tests.csv'),
+ tf=file.path(roots['tf'],'TF_estimated_correlation_tests/TF_estimated_correlation_tests.csv'),
+ fixed=file.path(roots['extension'],'TF_target_enrichment/TF_target_enrichment.csv'))
+if(any(!file.exists(sources))||any(!file.exists(file.path(dirname(sources),'RUN_COMPLETE'))))stop('Incomplete source outputs')
+hash<-function(p)digest::digest(file=p,algo='sha256')
+before<-vapply(sources,hash,'');code<-source_files(project_root)
+code_before<-setNames(vapply(code,hash,''),substring(code,nchar(project_root)+2L))
+d<-lapply(sources,read.csv,stringsAsFactors=FALSE,check.names=FALSE)
+a<-d$audit
+probe<-rbind(data.frame(item='Complete consistent queries',count=d$reconstruction$value[d$reconstruction$quantity=='queries_with_complete_consistent_sequence'],unit='query identifiers'),
+ data.frame(item=names(table(a$status)),count=as.integer(table(a$status)),unit='ordinary physical features'),
+ data.frame(item='Strict eligible probe features',count=sum(a$strict_probe_sensitivity_eligible),unit='ordinary physical features'))
+focal<-c(NIT2='AT3G44300',SOS1='AT2G01980',AHA2='AT4G30190',KUP4='AT4G23640',HKT1='AT4G10310',HAK5='AT4G13420',`CDKA;1`='AT3G48750',AT5G44720='AT5G44720',`LRK10L-1.2`='AT1G18390')
+probe<-rbind(probe,do.call(rbind,lapply(seq_along(focal),function(i)data.frame(item=paste(names(focal)[i],focal[i],sep=' / '),
+ count=sum(a$supplied_locus==focal[i]&a$strict_probe_sensitivity_eligible),unit='strict eligible physical features'))))
+co<-c('Root_75v0','Root_75v50','Root_100v75','Shoot_75v0','Difference_75v0','Difference_75v50','Difference_100v75')
+q<-d$metrics[d$metrics$omitted_pool=='75_2',]
+f<-q[q$normalization=='frozen',];r<-q[q$normalization=='refitted',]
+f<-f[match(co,f$contrast),];r<-r[match(co,r$contrast),]
+qc<-data.frame(contrast=co,frozen_Pearson=f$Pearson,refitted_Pearson=r$Pearson,
+ refitted_median_absolute_effect_change=r$median_absolute_effect_change,
+ refitted_p95_absolute_effect_change=r$p95_absolute_effect_change,
+ refitted_sign_agreement=r$sign_agreement_among_effects_ge_05)
+support<-rbind(data.frame(Gene=d$dual$Gene_name,locus=d$dual$locus,tissue=d$dual$tissue,screen='Salt and saline genotype',
+ RNA_salt_log2FC=d$dual$salt_RNA_log2FC,protein_salt_log2FC=d$dual$salt_protein_log2FC,
+ worst_assay_q=d$dual$worst_assay_q,joint_global_BH=d$dual$salt_joint_q_global),
+ data.frame(Gene=d$three$Gene_name,locus=d$three$locus,tissue=d$three$tissue,screen='Three-dataset salt context',
+ RNA_salt_log2FC=d$three$Array2_log2FC,protein_salt_log2FC=d$three$protein_log2FC,
+ worst_assay_q=d$three$worst_assay_q,joint_global_BH=d$three$Array2_joint_q_global))
+b<-d$baseline[d$baseline$contrast=='baseline_genotype',];b<-b[order(b$dataset,b$reference),]
+t<-d$tf;fixed<-d$fixed
+shown<-t[t$q_global<.05|(t$TF=='AT2G03340'&t$dataset=='Array1'&t$contrast=='Shoot_100v0'),]
+shown<-shown[order(shown$q_global,shown$TF),]
+tf<-data.frame(TF=shown$TF,TF_name=shown$TF_name,dataset=shown$dataset,contrast=shown$contrast,
+ mode='Estimated residual',targets=shown$NGenes,correlation=shown$used_correlation,BH=shown$q_global,BY=shown$q_BY)
+w<-fixed[fixed$TF=='AT2G03340'&fixed$dataset=='Array1'&fixed$contrast=='Shoot_100v0',]
+tf<-rbind(tf,data.frame(TF=w$TF,TF_name=w$TF_name,dataset=w$dataset,contrast=w$contrast,
+ mode=ifelse(w$mode=='primary','Fixed 0.01','Fixed 0.05'),targets=w$NGenes,
+ correlation=w$inter_gene_correlation,BH=w$q_global,BY=w$q_BY))
+values<-list(table_probe_audit=probe,table_pair_influence=qc,table_supporting_candidates=support,
+ table_strict_probe_baseline=b,table_TF_correlations=tf)
+revision<-system2('git',c('-C',shQuote(project_root),'rev-parse','HEAD'),stdout=TRUE)
+for(id in if(args=='all')ids else args){
+ folder<-file.path(out,id);dir.create(folder,showWarnings=FALSE)
+ marker<-file.path(folder,'RUN_COMPLETE');if(file.exists(marker))unlink(marker)
+ path<-file.path(folder,paste0(id,'.csv'));write_table(values[[id]],path)
+ stopifnot(identical(before,vapply(sources,hash,'')),identical(unname(code_before),unname(vapply(code,hash,''))))
+ dput(list(artifact_id=id,git_revision=revision,input_sha256=before,code_sha256=code_before,
+  output_sha256=setNames(hash(path),basename(path)),command=commandArgs(),session=capture.output(sessionInfo()),
+  specification='Display selection only. Complete source-family adjustments preserved; no correction recalculated on selected rows.'),file=file.path(folder,'provenance.R'))
+ writeLines('Complete; see provenance.R',marker);message('Completed ',id)
+}

@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **104 scripts**: **57 current workflow,
+script in this repository. It covers **105 scripts**: **58 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026 and the eight computational-extension files added on 4 November 2026. Original module descriptions were checked against
@@ -1458,3 +1458,15 @@ and exports the correlation audit and complete enrichment sensitivity table.
 
 Checks the correlation calculation against limma on synthetic unpaired and
 paired designs, and verifies that the covariance whitening produces identity.
+
+
+### [`scripts/reproduce_bmc_manuscript_tables.R`](../scripts/reproduce_bmc_manuscript_tables.R)
+
+Formats five reviewer-response display tables from complete registered results:
+probe reconstruction and focal mapping, flagged-pair influence under both
+normalization strategies, both exploratory candidate screens, every eligible
+strict-probe basal external-signature test, and all estimated-correlation TF BH
+findings plus WRKY3 under all three correlation settings. `inside()` separates
+roots and `hash()` records inputs/code/outputs. No model, source P value or
+source-family correction is recomputed after display selection. Run one ID,
+`all` or `--list`; the root variables are documented in `docs/bmc_revision.md`.
