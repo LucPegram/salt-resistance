@@ -107,3 +107,18 @@ shoot 75-versus-control comparison under both strategies; full omission results
 remain in their original complete CSVs. The TF display includes every estimated-
 correlation BH hit and WRKY3 at all three settings, rather than only the most
 favourable setting. These selections are not new discovery families.
+
+
+## Signature-score variance sensitivity
+
+Set `SALT_EXTENSION_ROOT` to the complete extension outputs and `SALT_OUTPUT_ROOT`
+to a separate directory; run
+`Rscript --vanilla scripts/reproduce_score_inference_sensitivity.R`. This holds
+all sample scores, contrast definitions, eligible families and the primary
+paired-score covariance fixed and removes empirical-Bayes variance borrowing.
+All point estimates must match the primary score models within 1e-10. Ordinary
+residual-variance t intervals and global BH/BY values cover all 141 external
+signature tests and every 781-test marker mode, not only selected basal scores.
+Every eligible basal external score is also exported for manuscript display.
+This is a model sensitivity, not an exact randomization test; the original small
+number of biological pools remains the limit on sampling precision.

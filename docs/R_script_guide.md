@@ -1,7 +1,7 @@
 # Guide to every R script
 
 This guide explains the purpose, main operations, inputs and outputs of every R
-script in this repository. It covers **105 scripts**: **58 current workflow,
+script in this repository. It covers **108 scripts**: **61 current workflow,
 configuration, maintenance and test files**, plus **47 inactive archived scripts**.
 Descriptions cover the source shipped with this guide, including the dataset-ranking
 module added on 3 November 2026 and the eight computational-extension files added on 4 November 2026. Original module descriptions were checked against
@@ -1470,3 +1470,24 @@ findings plus WRKY3 under all three correlation settings. `inside()` separates
 roots and `hash()` records inputs/code/outputs. No model, source P value or
 source-family correction is recomputed after display selection. Run one ID,
 `all` or `--list`; the root variables are documented in `docs/bmc_revision.md`.
+
+
+### [`R/bmc_score_sensitivity.R`](../R/bmc_score_sensitivity.R)
+
+`bmc_score_design()` reconstructs the original categorical pool design and
+contrasts from the registered sample table. `bmc_unmoderated_scores()` refits
+ordinary residual-variance score models with the original paired-score covariance,
+checks equality of point estimates, and adjusts every eligible test by BH/BY.
+It compares uncertainty with empirical-Bayes moderation without changing scores,
+reference selection or target eligibility. Negative outcomes remain in the export.
+
+### [`scripts/reproduce_score_inference_sensitivity.R`](../scripts/reproduce_score_inference_sensitivity.R)
+
+Reads completed sample, external-score and marker-score results, exports all 141
+external and 781-per-mode marker tests plus every basal external display row.
+`inside()` separates roots and `hash()` records source, code and output hashes.
+
+### [`tests/score_sensitivity_tests.R`](../tests/score_sensitivity_tests.R)
+
+Verifies score contrasts, standard errors, residual degrees of freedom and
+ordinary t P values against an independent synthetic `lm` calculation.
