@@ -10,8 +10,8 @@ if (length(args)) {
   paths <- substring(list.files(project_root, recursive = TRUE, all.files = TRUE,
                                 full.names = TRUE), nchar(project_root) + 2L)
 }
-allowed <- grepl("^(R|config|scripts|tests|legacy)/[A-Za-z0-9_./-]+\\.R$", paths) |
-  grepl("^(README\\.md|(docs|legacy)/[A-Za-z0-9_./-]+\\.md|DESCRIPTION|renv\\.lock|\\.gitignore)$", paths)
+allowed <- grepl("^(R|config|scripts|tests)/[A-Za-z0-9_./-]+\\.R$", paths) |
+  grepl("^(README\\.md|docs/[A-Za-z0-9_./-]+\\.md|DESCRIPTION|renv\\.lock|\\.gitignore)$", paths)
 forbidden <- grepl("(^|/)(data|source_data|outputs|results|figures|tables|\\.git|\\.Rproj.user)(/|$)", paths) |
   paths == "config/local.R" | grepl("(^|/)\\.\\.(/|$)", paths)
 bad <- paths[!allowed | forbidden]

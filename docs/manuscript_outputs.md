@@ -1,3 +1,8 @@
+# Registered output catalogue
+
+For the current manuscript numbering, use [the current display crosswalk](current_manuscript_outputs.md).
+This catalogue also retains earlier registered outputs for reproducibility.
+
 # Manuscript output commands
 
 Set external input and output roots as explained in README. Each command works
@@ -70,7 +75,7 @@ PNG previews, each recorded in provenance. To rebuild just these five non-integr
 run `Rscript --vanilla scripts/reproduce_figures.R`; rebuild the ten integration and reviewer-diagnostic
 tables and two additional figures with `Rscript --vanilla scripts/reproduce_integration.R`. See `docs/figure_design.md`.
 `Rscript --vanilla scripts/inventory_sources.R` creates source and historical
-script inventories locally. `legacy/README.md` lists original script hashes.
+script inventories locally. Historical script hashes remain in Git history; see [cleanup notes](cleanup.md).
 No inventory of result values is stored in this repository.
 
 Figure 4 now shows sample PCA for all treatment/genotype combinations. The earlier

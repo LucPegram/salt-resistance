@@ -3,7 +3,7 @@ source_files <- function(root) {
                       include.dirs = FALSE)
   relative <- substring(paths, nchar(root) + 2L)
   keep <- grepl("^(R|config|scripts|tests)/.*\\.R$", relative) |
-    grepl("^(docs/.*\\.md|legacy/.*\\.(R|md)|README\\.md|DESCRIPTION|renv\\.lock|\\.gitignore)$", relative)
+    grepl("^(docs/.*\\.md|README\\.md|DESCRIPTION|renv\\.lock|\\.gitignore)$", relative)
   paths[keep & !relative %in% "config/local.R"]
 }
 

@@ -1,7 +1,7 @@
 # Reproducible analysis code
 
-This repository contains R source code, an environment lock, historical source
-scripts and reproduction instructions. Experimental data, source archives,
+This repository contains R source code, an environment lock and reproduction
+instructions. Experimental data, source archives,
 manuscripts, statistical results, generated figures and local run records are
 excluded. Every registered output can be rebuilt separately from external inputs.
 
@@ -23,15 +23,15 @@ excluded. Every registered output can be rebuilt separately from external inputs
 - `config/`: external input paths, analysis settings and output registry.
 - `scripts/`: reproduction, dependency checks and code-publication checks.
 - `tests/`: synthetic examples and independent statistical calculations.
-- `legacy/`: original source scripts, inactive and retained for inspection.
 - `docs/`: analysis decisions, output commands and limitations.
 
 The revised workflow fits models from quantitative matrices. The primary RNA
 workflow now regenerates between-array normalization from supplied processed
 signals; [normalization methods and commands](docs/microarray_normalization.md)
 describe the assessment and separate input root. It does not reconstruct scanner
-acquisition, vendor background processing or mapping specificity. Archived
-scripts are not executed automatically or represented as validated analyses.
+acquisition, vendor background processing or mapping specificity. Historical scripts are available in Git history at
+revision
+`557664e39865b10bd8bbdfe4b1bb8766b6fbfc14`; they are not part of the current checkout.
 
 ## Environment
 
@@ -48,8 +48,7 @@ Rscript --vanilla tests/normalization_tests.R
 ```
 
 The lock records exact installed sources and versions. These checks do not prove
-a clean-machine restoration. Archived scripts may reference packages outside the
-active workflow. Packages are never installed silently during analysis.
+a clean-machine restoration. Packages are never installed silently during analysis.
 If using a separate local R library, set `SALT_R_LIB` to its absolute path.
 
 ## External inputs and outputs
@@ -86,18 +85,20 @@ model results. Keys include input, relevant source, setting and package-version
 hashes. Cached payloads are hash-checked. A fresh run without a cache is supported.
 Caches are derived data and must never be pushed.
 
-The seven current manuscript figures use consistent publication styling and export
+The six main and nine supplementary manuscript figures use consistent publication
+styling and export
 vector PDF/SVG, 600-dpi TIFF and PNG previews. All formats are hash-recorded.
 `docs/figure_design.md` describes visual encodings and display qualifications.
 
 ## Reproduction and audit documentation
 
 [`docs/R_script_guide.md`](docs/R_script_guide.md) explains the purpose, inputs,
-outputs and functions of every current and archived R script.
+outputs and functions of every current R script.
 
-`docs/manuscript_outputs.md` maps every main/supplementary table and figure to an
-independent command. `config/artifacts.R` and `R/revision_registry.R` provide the
-registry. Builders never require a pre-existing output directory.
+[The current display crosswalk](docs/current_manuscript_outputs.md) maps every
+main/supplementary table and figure to an independent command.
+`docs/manuscript_outputs.md` documents additional registered outputs.
+`config/artifacts.R` and `R/revision_registry.R` provide the registry. Builders never require a pre-existing output directory.
 `docs/analysis_decisions.md` explains model choices and unresolved constraints.
 `docs/integration_analysis.md` specifies gene mapping, contrast alignment,
 directional conjunction, multiplicity, pathway universes and sensitivities.
@@ -107,9 +108,9 @@ Rscript --vanilla scripts/inventory_sources.R
 ```
 
 This inventories external files and historical analyses by path, hash and role,
-without executing old scripts. `legacy/README.md` maps archived code to original
-paths and hashes. The explicit maintenance command `scripts/import_legacy.R`
-imports R files only and refuses to overwrite an archive.
+without executing old scripts. The historical code, original paths and hashes
+remain recoverable from the pre-cleanup Git revision linked in
+[cleanup and recovery notes](docs/cleanup.md).
 
 Before committing or uploading, stage the intended source files and run:
 
